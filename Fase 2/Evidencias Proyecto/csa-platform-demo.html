@@ -1,0 +1,4430 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>CSA Platform</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      min-height: 100%;
+      margin: 0;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      -webkit-font-smoothing: antialiased;
+      background: #f1f5f9;
+      color: #0f172a;
+    }
+
+    .app-shell {
+      display: grid;
+      grid-template-columns: minmax(14rem, 16rem) minmax(0, 1fr);
+      min-height: 100dvh;
+      background: #f1f5f9;
+      color: #0f172a;
+    }
+
+    .app-shell__body {
+      min-width: 0;
+    }
+
+    .app-shell__header {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.75rem;
+      min-height: 3.5rem;
+      padding: 0.5rem 2.25rem;
+      background: #ffffff;
+      border-bottom: 1px solid #e2e8f0;
+    }
+
+    .app-shell__badge {
+      padding: 0.3rem 0.65rem;
+      border: 1px solid #fde68a;
+      border-radius: 999px;
+      background: #fffbeb;
+      color: #a16207;
+      font-size: 0.73rem;
+      font-weight: 600;
+    }
+
+    .app-shell__content {
+      width: min(100%, 76rem);
+      min-width: 0;
+      min-height: calc(100dvh - 3.5rem);
+      padding: 2.25rem;
+      overflow-x: hidden;
+    }
+
+    .navigation {
+      display: flex;
+      flex-direction: column;
+      min-height: 100dvh;
+      padding: 1.5rem 1rem;
+      background: #0f172a;
+      color: #cbd5e1;
+    }
+
+    .navigation__brand {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0 0.5rem 1.5rem;
+    }
+
+    .navigation__brand-mark {
+      display: grid;
+      flex: 0 0 auto;
+      place-items: center;
+      width: 2.5rem;
+      height: 2.5rem;
+      border-radius: 0.8rem;
+      background: #2563eb;
+      color: #ffffff;
+      font-size: 0.7rem;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+    }
+
+    .navigation__brand-name,
+    .navigation__brand-subtitle,
+    .navigation__section-title,
+    .navigation__section-note,
+    .navigation__footer {
+      margin: 0;
+    }
+
+    .navigation__brand-name {
+      color: #f8fafc;
+      font-size: 0.95rem;
+      font-weight: 700;
+    }
+
+    .navigation__brand-subtitle {
+      margin-top: 0.15rem;
+      color: #94a3b8;
+      font-size: 0.75rem;
+    }
+
+    .navigation__nav {
+      display: grid;
+      gap: 1.25rem;
+    }
+
+    .navigation__group--secondary {
+      margin-top: 0.5rem;
+      padding-top: 1.25rem;
+      border-top: 1px solid #1e293b;
+    }
+
+    .navigation__section-title {
+      padding: 0 0.75rem;
+      color: #64748b;
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .navigation__section-note {
+      padding: 0.3rem 0.75rem 0;
+      color: #64748b;
+      font-size: 0.72rem;
+      line-height: 1.4;
+    }
+
+    .navigation__list {
+      display: grid;
+      gap: 0.15rem;
+      margin: 0.5rem 0 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .navigation__link {
+      display: block;
+      padding: 0.55rem 0.75rem;
+      border: none;
+      border-left: 3px solid transparent;
+      border-radius: 0.5rem;
+      background: transparent;
+      color: #cbd5e1;
+      font: inherit;
+      font-size: 0.88rem;
+      font-weight: 500;
+      text-align: left;
+      text-decoration: none;
+      width: 100%;
+      cursor: pointer;
+      transition: background-color 160ms ease, color 160ms ease;
+    }
+
+    .navigation__link:hover {
+      background: #1e293b;
+      color: #ffffff;
+    }
+
+    .navigation__link:focus-visible {
+      outline: 3px solid #93c5fd;
+      outline-offset: 2px;
+    }
+
+    .navigation__link--active {
+      border-left-color: #60a5fa;
+      background: #1d4ed8;
+      color: #ffffff;
+      font-weight: 600;
+    }
+
+    .navigation__link--active:hover {
+      background: #1d4ed8;
+    }
+
+    .navigation__group--secondary .navigation__link {
+      font-size: 0.83rem;
+    }
+
+    .navigation__footer {
+      margin-top: auto;
+      padding: 1.25rem 0.75rem 0;
+      border-top: 1px solid #1e293b;
+      color: #64748b;
+      font-size: 0.72rem;
+      line-height: 1.5;
+    }
+
+    .crm-tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .demo-chip {
+      padding: 0.4rem 0.85rem;
+      border: 1px dashed #cbd5e1;
+      border-radius: 999px;
+      background: #ffffff;
+      color: #64748b;
+      font: inherit;
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .demo-chip--on {
+      border-style: solid;
+      border-color: #bfdbfe;
+      background: #eff6ff;
+      color: #1e40af;
+    }
+
+    .demo-chip:focus-visible {
+      outline: 3px solid #93c5fd;
+      outline-offset: 2px;
+    }
+
+    .is-hidden {
+      display: none !important;
+    }
+
+    .demo-page {
+      display: grid;
+      gap: 1.5rem;
+      grid-template-columns: minmax(0, 1fr);
+      min-width: 0;
+    }
+
+    .demo-page__eyebrow {
+      margin: 0 0 0.25rem;
+      color: #64748b;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .demo-page h1 {
+      margin: 0;
+      color: #0f172a;
+      font-size: 1.5rem;
+      line-height: 1.3;
+    }
+
+    .demo-page__description {
+      max-width: 46rem;
+      margin: 0.5rem 0 0;
+      color: #475569;
+      line-height: 1.6;
+    }
+
+    .demo-panel {
+      min-width: 0;
+      padding: 1.25rem 1.5rem 1.5rem;
+      border: 1px solid #e2e8f0;
+      border-radius: 1rem;
+      background: #ffffff;
+    }
+
+    .demo-panel__title {
+      margin: 0;
+      color: #0f172a;
+      font-size: 1rem;
+      font-weight: 700;
+    }
+
+    .demo-panel__hint {
+      margin: 0.25rem 0 1rem;
+      color: #64748b;
+      font-size: 0.82rem;
+      line-height: 1.5;
+    }
+
+    .demo-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.85rem;
+    }
+
+    .demo-table th,
+    .demo-table td {
+      padding: 0.6rem 0.75rem;
+      border-bottom: 1px solid #e2e8f0;
+      text-align: left;
+      vertical-align: top;
+    }
+
+    .demo-table th {
+      color: #64748b;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .demo-table td {
+      color: #334155;
+    }
+
+    .demo-table tbody tr:last-child td {
+      border-bottom: none;
+    }
+
+    .demo-table__strong {
+      color: #0f172a;
+      font-weight: 600;
+    }
+
+    .demo-table__wrap {
+      overflow-x: auto;
+    }
+
+    .demo-badge {
+      display: inline-block;
+      padding: 0.15rem 0.55rem;
+      border: 1px solid #bbf7d0;
+      border-radius: 999px;
+      background: #f0fdf4;
+      color: #15803d;
+      font-size: 0.72rem;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .demo-badge--wait {
+      border-color: #fde68a;
+      background: #fffbeb;
+      color: #a16207;
+    }
+
+    .demo-facts {
+      display: grid;
+      gap: 0.5rem 1.5rem;
+      grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
+      margin: 0;
+    }
+
+    .demo-facts__term {
+      margin: 0;
+      color: #64748b;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    .demo-facts__value {
+      margin: 0.15rem 0 0;
+      color: #0f172a;
+      font-size: 0.9rem;
+    }
+
+    .demo-note {
+      margin: 1rem 0 0;
+      color: #64748b;
+      font-size: 0.78rem;
+      line-height: 1.5;
+    }
+
+    .demo-pipeline {
+      display: grid;
+      gap: 0.6rem;
+      grid-auto-columns: 14.5rem;
+      grid-auto-flow: column;
+      max-width: 100%;
+      overflow-x: auto;
+      padding-bottom: 0.75rem;
+    }
+
+    .demo-pipeline__column {
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+      border-radius: 0.7rem;
+      background: #f1f5f9;
+    }
+
+    .demo-pipeline__head {
+      padding: 0.55rem 0.7rem 0.5rem;
+      border-bottom: 3px solid #cbd5e1;
+    }
+
+    .demo-pipeline__column--won .demo-pipeline__head {
+      border-bottom-color: #86efac;
+    }
+
+    .demo-pipeline__column--lost .demo-pipeline__head {
+      border-bottom-color: #cbd5e1;
+    }
+
+    .demo-pipeline__name {
+      margin: 0;
+      color: #0f172a;
+      font-size: 0.8rem;
+      font-weight: 700;
+    }
+
+    .demo-pipeline__meta {
+      margin: 0.15rem 0 0;
+      color: #475569;
+      font-size: 0.72rem;
+      font-weight: 600;
+    }
+
+    .demo-pipeline__body {
+      display: grid;
+      gap: 0.45rem;
+      align-content: start;
+      padding: 0.55rem;
+    }
+
+    .demo-deal {
+      display: grid;
+      gap: 0.2rem;
+      width: 100%;
+      padding: 0.55rem 0.65rem;
+      border: 1px solid #e2e8f0;
+      border-left: 3px solid #93c5fd;
+      border-radius: 0.5rem;
+      background: #ffffff;
+      font: inherit;
+      text-align: left;
+      cursor: pointer;
+    }
+
+    .demo-deal:hover {
+      border-color: #bfdbfe;
+      border-left-color: #1d4ed8;
+      box-shadow: 0 0.35rem 0.9rem rgb(15 23 42 / 0.08);
+    }
+
+    .demo-deal:focus-visible {
+      outline: 3px solid #93c5fd;
+      outline-offset: 2px;
+    }
+
+    .demo-deal--won {
+      border-left-color: #22c55e;
+    }
+
+    .demo-deal--lost {
+      border-left-color: #cbd5e1;
+    }
+
+    .demo-deal__title {
+      color: #0f172a;
+      font-size: 0.82rem;
+      font-weight: 700;
+      line-height: 1.3;
+    }
+
+    .demo-deal__company {
+      color: #475569;
+      font-size: 0.75rem;
+    }
+
+    .demo-deal__value {
+      color: #0f172a;
+      font-size: 0.82rem;
+      font-weight: 700;
+    }
+
+    .demo-deal__foot {
+      margin-top: 0.2rem;
+      padding-top: 0.35rem;
+      border-top: 1px solid #f1f5f9;
+      color: #64748b;
+      font-size: 0.7rem;
+      line-height: 1.4;
+    }
+
+    .demo-pipeline__empty {
+      padding: 0.5rem 0.2rem;
+      color: #94a3b8;
+      font-size: 0.72rem;
+    }
+
+    .demo-pipeline__add {
+      padding: 0.4rem 0.6rem;
+      border: 1px dashed #cbd5e1;
+      border-radius: 0.5rem;
+      background: transparent;
+      color: #475569;
+      font: inherit;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-align: left;
+      cursor: pointer;
+    }
+
+    .demo-pipeline__add:hover {
+      border-color: #93c5fd;
+      background: #ffffff;
+      color: #1d4ed8;
+    }
+
+    .demo-pipeline__add:focus-visible {
+      outline: 3px solid #93c5fd;
+      outline-offset: 2px;
+    }
+
+    .demo-toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.75rem;
+    }
+
+    .demo-toolbar__hint {
+      margin: 0;
+      color: #64748b;
+      font-size: 0.82rem;
+    }
+
+    .demo-toolbar__actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .demo-button {
+      padding: 0.5rem 1rem;
+      border: 1px solid #1d4ed8;
+      border-radius: 0.6rem;
+      background: #1d4ed8;
+      color: #ffffff;
+      font: inherit;
+      font-size: 0.83rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .demo-button:hover {
+      background: #1e40af;
+    }
+
+    .demo-button--ghost {
+      border-color: #cbd5e1;
+      background: #ffffff;
+      color: #334155;
+    }
+
+    .demo-button--ghost:hover {
+      background: #f1f5f9;
+    }
+
+    .demo-button:focus-visible {
+      outline: 3px solid #93c5fd;
+      outline-offset: 2px;
+    }
+
+    .demo-notice {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.75rem;
+      padding: 0.7rem 0.9rem;
+      border: 1px solid #fde68a;
+      border-radius: 0.7rem;
+      background: #fffbeb;
+      color: #a16207;
+      font-size: 0.82rem;
+      line-height: 1.5;
+    }
+
+    .demo-notice__close {
+      padding: 0.25rem 0.7rem;
+      border: 1px solid #fcd34d;
+      border-radius: 999px;
+      background: #ffffff;
+      color: #a16207;
+      font: inherit;
+      font-size: 0.75rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .demo-form {
+      display: grid;
+      gap: 1.25rem;
+    }
+
+    .demo-form__section {
+      display: grid;
+      gap: 0.6rem;
+    }
+
+    .demo-form__section-title {
+      margin: 0;
+      color: #64748b;
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+    }
+
+    .demo-form__grid {
+      display: grid;
+      gap: 0.75rem;
+      grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr));
+    }
+
+    .demo-field {
+      display: grid;
+      gap: 0.25rem;
+      min-width: 0;
+    }
+
+    .demo-field--wide {
+      grid-column: 1 / -1;
+    }
+
+    .demo-field__label {
+      color: #334155;
+      font-size: 0.76rem;
+      font-weight: 600;
+    }
+
+    .demo-field__control {
+      width: 100%;
+      padding: 0.5rem 0.65rem;
+      border: 1px solid #cbd5e1;
+      border-radius: 0.5rem;
+      background: #ffffff;
+      color: #0f172a;
+      font: inherit;
+      font-size: 0.85rem;
+    }
+
+    .demo-field__control:focus-visible {
+      outline: 3px solid #93c5fd;
+      outline-offset: 1px;
+    }
+
+    textarea.demo-field__control {
+      min-height: 4.5rem;
+      resize: vertical;
+    }
+
+    .demo-dialog {
+      position: fixed;
+      inset: 0;
+      z-index: 20;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+    }
+
+    .demo-dialog--side {
+      align-items: stretch;
+      justify-content: flex-end;
+      padding: 0;
+    }
+
+    .demo-dialog__backdrop {
+      position: absolute;
+      inset: 0;
+      border: none;
+      background: rgb(15 23 42 / 0.45);
+      cursor: pointer;
+    }
+
+    .demo-dialog__panel {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      width: min(100%, 42rem);
+      max-height: 100%;
+      border: 1px solid #e2e8f0;
+      border-radius: 1rem;
+      background: #ffffff;
+      box-shadow: 0 1.5rem 3rem rgb(15 23 42 / 0.18);
+    }
+
+    .demo-dialog--side .demo-dialog__panel {
+      width: min(100%, 28rem);
+      max-height: none;
+      border-radius: 0;
+      border-right: none;
+      border-top: none;
+      border-bottom: none;
+    }
+
+    .demo-dialog__header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 1rem;
+      padding: 1.25rem 1.5rem 1rem;
+      border-bottom: 1px solid #e2e8f0;
+    }
+
+    .demo-dialog__title {
+      margin: 0;
+      color: #0f172a;
+      font-size: 1.05rem;
+      font-weight: 700;
+    }
+
+    .demo-dialog__hint {
+      margin: 0.3rem 0 0;
+      color: #64748b;
+      font-size: 0.82rem;
+      line-height: 1.5;
+    }
+
+    .demo-dialog__close {
+      flex: 0 0 auto;
+      padding: 0.35rem 0.75rem;
+      border: 1px solid #cbd5e1;
+      border-radius: 999px;
+      background: #ffffff;
+      color: #334155;
+      font: inherit;
+      font-size: 0.78rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .demo-dialog__close:hover {
+      background: #f8fafc;
+    }
+
+    .demo-dialog__body {
+      overflow-y: auto;
+      padding: 1.25rem 1.5rem;
+    }
+
+    .demo-dialog__footer {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.75rem;
+      padding: 1rem 1.5rem 1.25rem;
+      border-top: 1px solid #e2e8f0;
+      background: #f8fafc;
+      border-radius: 0 0 1rem 1rem;
+    }
+
+    .demo-dialog--side .demo-dialog__footer {
+      border-radius: 0;
+    }
+
+    .demo-dialog__warning {
+      margin: 0;
+      color: #a16207;
+      font-size: 0.76rem;
+      line-height: 1.45;
+    }
+
+    .demo-dialog__buttons {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .demo-dialog__button {
+      padding: 0.5rem 1.1rem;
+      border: 1px solid #cbd5e1;
+      border-radius: 0.6rem;
+      background: #ffffff;
+      color: #334155;
+      font: inherit;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .demo-dialog__button:hover {
+      background: #f1f5f9;
+    }
+
+    .demo-dialog__button--primary {
+      border-color: #1d4ed8;
+      background: #1d4ed8;
+      color: #ffffff;
+    }
+
+    .demo-dialog__button--primary:hover {
+      background: #1e40af;
+    }
+
+    .demo-dialog__backdrop:focus-visible,
+    .demo-dialog__close:focus-visible,
+    .demo-dialog__button:focus-visible {
+      outline: 3px solid #93c5fd;
+      outline-offset: 2px;
+    }
+
+    @media (max-width: 760px) {
+      .app-shell {
+        grid-template-columns: 1fr;
+      }
+
+      .navigation {
+        min-height: 0;
+        padding: 1rem;
+      }
+
+      .navigation__brand {
+        padding-bottom: 1rem;
+      }
+
+      .navigation__nav {
+        gap: 1rem;
+      }
+
+      .navigation__list {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .navigation__section-note,
+      .navigation__footer {
+        display: none;
+      }
+
+      .app-shell__header {
+        padding: 0.5rem 1.25rem;
+      }
+
+      .app-shell__content {
+        min-height: 0;
+        padding: 1.25rem;
+      }
+
+      .demo-pipeline {
+        grid-auto-columns: 13rem;
+      }
+
+      .demo-panel {
+        padding: 1rem;
+      }
+
+      .demo-page h1 {
+        font-size: 1.3rem;
+      }
+
+      .demo-dialog {
+        padding: 0;
+      }
+
+      .demo-dialog__panel {
+        width: 100%;
+        height: 100%;
+        max-height: none;
+        border-radius: 0;
+      }
+
+      .demo-dialog__footer {
+        border-radius: 0;
+      }
+    }
+  
+    .app-area { min-width: 0; }
+    .home { display: grid; gap: 2rem; max-width: 56rem; }
+    .home__intro { display: grid; gap: 0.6rem; }
+    .home__title { margin: 0; color: #0f172a; font-size: 1.6rem; line-height: 1.25; }
+    .home__lead { max-width: 44rem; margin: 0; color: #475569; font-size: 0.95rem; line-height: 1.6; }
+    .home__search { display: grid; gap: 0.6rem; padding: 1.5rem; border: 1px solid #e2e8f0; border-radius: 1rem; background: #ffffff; }
+    .home__search-label { color: #334155; font-size: 0.85rem; font-weight: 600; }
+    .home__search-row { display: flex; flex-wrap: wrap; gap: 0.6rem; }
+    .home__search-input { flex: 1 1 20rem; min-width: 0; padding: 0.7rem 0.9rem; border: 1px solid #cbd5e1; border-radius: 0.6rem; background: #ffffff; color: #0f172a; font: inherit; font-size: 0.95rem; }
+    .home__search-input::placeholder { color: #94a3b8; }
+    .home__search-button { flex: 0 0 auto; padding: 0.7rem 1.5rem; border: 1px solid #1d4ed8; border-radius: 0.6rem; background: #1d4ed8; color: #ffffff; font: inherit; font-size: 0.95rem; font-weight: 600; cursor: pointer; }
+    .home__search-button:hover { background: #1e40af; }
+    .home__search-note { margin: 0; color: #64748b; font-size: 0.8rem; line-height: 1.5; }
+    .home__section-title { margin: 0 0 0.9rem; color: #64748b; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.09em; text-transform: uppercase; }
+    .home__actions-list { display: grid; gap: 0.75rem; grid-template-columns: repeat(auto-fit, minmax(20rem, 1fr)); margin: 0; padding: 0; list-style: none; }
+    .home__action { display: grid; gap: 0.3rem; height: 100%; padding: 1rem 1.1rem; border: 1px solid #e2e8f0; border-radius: 0.8rem; background: #ffffff; text-decoration: none; cursor: pointer; }
+    .home__action:hover { border-color: #bfdbfe; background: #f8fafc; }
+    .home__action-label { color: #0f172a; font-size: 0.95rem; font-weight: 600; }
+    .home__action-description { color: #475569; font-size: 0.83rem; line-height: 1.5; }
+    .demo-grid { display: grid; gap: 0.75rem; grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr)); }
+    .demo-card { display: grid; gap: 0.3rem; align-content: start; padding: 0.9rem 1rem; border: 1px solid #e2e8f0; border-radius: 0.75rem; background: #f8fafc; }
+    .demo-card__label { color: #64748b; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; }
+    .demo-card__value { color: #0f172a; font-size: 1.15rem; font-weight: 700; }
+    .demo-card__hint { color: #64748b; font-size: 0.76rem; line-height: 1.45; }
+    .demo-source { display: flex; flex-wrap: wrap; gap: 0.35rem; align-items: baseline; padding: 0.7rem 0.9rem; border: 1px solid #bfdbfe; border-radius: 0.7rem; background: #eff6ff; color: #1e40af; font-size: 0.83rem; line-height: 1.5; }
+    .demo-source__label { font-weight: 700; }
+    .demo-field__auto { padding: 0.5rem 0.65rem; border: 1px dashed #cbd5e1; border-radius: 0.5rem; background: #f8fafc; color: #334155; font-size: 0.85rem; }
+    .demo-badge--off { border-color: #e2e8f0; background: #f8fafc; color: #64748b; }
+    .demo-facts--spaced { margin-top: 1rem; }
+    .demo-toolbar .demo-chip { cursor: default; }
+
+  </style>
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="navigation">
+      <div class="navigation__brand">
+        <span class="navigation__brand-mark" aria-hidden="true">CSA</span>
+        <div>
+          <p class="navigation__brand-name">CSA Platform</p>
+          <p class="navigation__brand-subtitle">Salud Integral</p>
+        </div>
+      </div>
+
+      <nav class="navigation__nav" aria-label="Navegación principal">
+        <div class="navigation__group">
+          <ul class="navigation__list">
+            <li>
+              <button type="button" class="navigation__link" data-area="home">Inicio</button>
+            </li>
+          </ul>
+        </div>
+
+        <div class="navigation__group">
+          <p class="navigation__section-title">Operación</p>
+          <ul class="navigation__list" aria-label="Operación">
+            <li>
+              <button type="button" class="navigation__link" data-area="patients">Pacientes</button>
+            </li>
+            <li>
+              <button type="button" class="navigation__link" data-area="clinical">Clínica</button>
+            </li>
+            <li>
+              <button type="button" class="navigation__link" data-area="optics">Óptica</button>
+            </li>
+          </ul>
+        </div>
+
+        <div class="navigation__group">
+          <p class="navigation__section-title">Comercial</p>
+          <ul class="navigation__list" aria-label="Comercial">
+            <li>
+              <button type="button" class="navigation__link" data-area="crm">CRM Comercial</button>
+            </li>
+          </ul>
+        </div>
+
+        <div class="navigation__group">
+          <p class="navigation__section-title">Gestión</p>
+          <ul class="navigation__list" aria-label="Gestión">
+            <li>
+              <button type="button" class="navigation__link" data-area="products">Productos</button>
+            </li>
+            <li>
+              <button type="button" class="navigation__link" data-area="inventory">Inventario</button>
+            </li>
+            <li>
+              <button type="button" class="navigation__link" data-area="sales">Ventas y pagos</button>
+            </li>
+            <li>
+              <button type="button" class="navigation__link" data-area="dashboards">Dashboards</button>
+            </li>
+          </ul>
+        </div>
+
+        <div class="navigation__group">
+          <p class="navigation__section-title">Administración</p>
+          <ul class="navigation__list" aria-label="Administración">
+            <li>
+              <button type="button" class="navigation__link" data-area="users">Usuarios y permisos</button>
+            </li>
+            <li>
+              <button type="button" class="navigation__link" data-area="audit">Auditoría</button>
+            </li>
+          </ul>
+        </div>
+
+        <div class="navigation__group navigation__group--secondary">
+          <p class="navigation__section-title">Ficha del paciente</p>
+          <p class="navigation__section-note">Se consultan desde el paciente.</p>
+          <ul class="navigation__list" aria-label="Ficha del paciente">
+            <li>
+              <button type="button" class="navigation__link" data-area="prescriptions">Recetas</button>
+            </li>
+            <li>
+              <button type="button" class="navigation__link" data-area="documents">Documentos</button>
+            </li>
+          </ul>
+        </div>
+      </nav>
+
+      <p class="navigation__footer">Un paciente · una identidad · múltiples procesos</p>
+    </aside>
+
+    <div class="app-shell__body">
+      <header class="app-shell__header">
+        <span class="app-shell__badge">Datos ficticios para validación funcional</span>
+      </header>
+
+      <main id="main-content" class="app-shell__content">
+<div class="app-area is-hidden" data-app-area="home"><section class="home" aria-labelledby="home-title">
+  <header class="home__intro">
+    <h1 id="home-title" class="home__title">Buscar paciente</h1>
+    <p class="home__lead">
+      Identifica al paciente una sola vez para trabajar sobre la misma identidad
+      en Clínica, Óptica, recetas y documentos.
+    </p>
+  </header>
+
+  <form class="home__search" data-home-search="1">
+    <label class="home__search-label" for="patient-search">
+      RUT, nombre, apellido, teléfono o correo
+    </label>
+
+    <div class="home__search-row">
+      <input
+        id="patient-search"
+        class="home__search-input"
+        type="search"
+        name="patient-search"
+        autocomplete="off"
+        placeholder="Ingresar el RUT del paciente"
+      />
+      <button class="home__search-button" type="submit">Buscar</button>
+    </div>
+
+    <p class="home__search-note">
+      La búsqueda con resultados y la ficha del paciente se incorporan en la siguiente
+      etapa. Por ahora este acceso lleva al área de Pacientes.
+    </p>
+  </form>
+
+  
+    <article class="demo-panel">
+      <p class="demo-panel__title">Pacientes consultados recientemente</p>
+      <p class="demo-panel__hint">Ejemplo de lo que vería el usuario al iniciar su jornada.</p>
+
+      <div class="demo-table__wrap">
+        <table class="demo-table">
+          <thead>
+            <tr>
+              <th scope="col">Paciente</th>
+              <th scope="col">RUT</th>
+              <th scope="col">Edad</th>
+              <th scope="col">Teléfono</th>
+              <th scope="col">Última atención</th>
+            </tr>
+          </thead>
+          <tbody>
+            
+              <tr>
+                <td class="demo-table__strong">Paciente Demo 01</td>
+                <td>99.999.001-D</td>
+                <td>42</td>
+                <td>+56 9 0000 0001</td>
+                <td>08-09-2026</td>
+              </tr>
+            
+
+              <tr>
+                <td class="demo-table__strong">Paciente Demo 02</td>
+                <td>99.999.002-D</td>
+                <td>35</td>
+                <td>+56 9 0000 0002</td>
+                <td>05-09-2026</td>
+              </tr>
+            
+
+              <tr>
+                <td class="demo-table__strong">Paciente Demo 03</td>
+                <td>99.999.003-D</td>
+                <td>58</td>
+                <td>+56 9 0000 0003</td>
+                <td>02-09-2026</td>
+              </tr>
+            
+          </tbody>
+        </table>
+      </div>
+    </article>
+
+    <article class="demo-panel">
+      <p class="demo-panel__title">Actividad reciente</p>
+
+      <div class="demo-table__wrap">
+        <table class="demo-table">
+          <thead>
+            <tr>
+              <th scope="col">Paciente</th>
+              <th scope="col">Actividad</th>
+              <th scope="col">Fecha</th>
+            </tr>
+          </thead>
+          <tbody>
+            
+              <tr>
+                <td class="demo-table__strong">Paciente Demo 01</td>
+                <td>Atención clínica y receta emitida</td>
+                <td>08-09-2026</td>
+              </tr>
+            
+
+              <tr>
+                <td class="demo-table__strong">Paciente Demo 02</td>
+                <td>Documento de lensometría cargado</td>
+                <td>05-09-2026</td>
+              </tr>
+            
+
+              <tr>
+                <td class="demo-table__strong">Paciente Demo 03</td>
+                <td>Atención registrada en operativo</td>
+                <td>02-09-2026</td>
+              </tr>
+            
+          </tbody>
+        </table>
+      </div>
+    </article>
+  
+
+  <section class="home__actions" aria-labelledby="home-actions-title">
+    <h2 id="home-actions-title" class="home__section-title">Tareas frecuentes</h2>
+
+    <ul class="home__actions-list">
+      
+        <li>
+          <a class="home__action" href="#" data-area="patients">
+            <span class="home__action-label">Registrar paciente</span>
+            <span class="home__action-description">Crear la identidad del paciente cuando su RUT todavía no existe.</span>
+          </a>
+        </li>
+      
+
+        <li>
+          <a class="home__action" href="#" data-area="clinical">
+            <span class="home__action-label">Nueva atención clínica</span>
+            <span class="home__action-description">Registrar la atención de un paciente y emitir su receta.</span>
+          </a>
+        </li>
+      
+
+        <li>
+          <a class="home__action" href="#" data-area="optics">
+            <span class="home__action-label">Atender en Óptica</span>
+            <span class="home__action-description">Recuperar la receta del paciente y continuar el proceso óptico.</span>
+          </a>
+        </li>
+      
+
+        <li>
+          <a class="home__action" href="#" data-area="crm">
+            <span class="home__action-label">Gestión comercial</span>
+            <span class="home__action-description">Empresas, contactos y oportunidades de los programas de salud.</span>
+          </a>
+        </li>
+      
+    </ul>
+  </section>
+</section></div>
+<div class="app-area is-hidden" data-app-area="patients"><section class="demo-page" aria-labelledby="patients-page-title">
+    <header>
+      <p class="demo-page__eyebrow">Área funcional</p>
+      <h1 id="patients-page-title">Pacientes</h1>
+      <p class="demo-page__description">
+        Cada persona existe una sola vez. Desde este registro trabajan Clínica y Óptica,
+        cada una con la información que le corresponde según su rol.
+      </p>
+    </header>
+
+    <div class="demo-toolbar">
+      <p class="demo-toolbar__hint">
+        Búsqueda por RUT, nombre, apellido, teléfono o correo.
+      </p>
+
+      <div class="demo-toolbar__actions">
+        <button type="button" class="demo-button" data-open="patient">
+          Nuevo paciente
+        </button>
+      </div>
+    </div>
+
+    <p class="demo-notice is-hidden" data-area-notice><span></span><button type="button" class="demo-notice__close" data-notice-close>Entendido</button></p>
+
+    <article class="demo-panel">
+      <p class="demo-panel__title">Resultados de búsqueda</p>
+
+      <div class="demo-table__wrap">
+        <table class="demo-table">
+          <thead>
+            <tr>
+              <th scope="col">Nombre</th>
+              <th scope="col">RUT</th>
+              <th scope="col">Edad</th>
+              <th scope="col">Teléfono</th>
+              <th scope="col">Correo</th>
+              <th scope="col">Última atención</th>
+            </tr>
+          </thead>
+          <tbody>
+            
+              <tr>
+                <td class="demo-table__strong">Paciente Demo 01</td>
+                <td>99.999.001-D</td>
+                <td>42</td>
+                <td>+56 9 0000 0001</td>
+                <td>paciente01@ejemplo.invalid</td>
+                <td>08-09-2026</td>
+              </tr>
+            
+
+              <tr>
+                <td class="demo-table__strong">Paciente Demo 02</td>
+                <td>99.999.002-D</td>
+                <td>35</td>
+                <td>+56 9 0000 0002</td>
+                <td>paciente02@ejemplo.invalid</td>
+                <td>05-09-2026</td>
+              </tr>
+            
+
+              <tr>
+                <td class="demo-table__strong">Paciente Demo 03</td>
+                <td>99.999.003-D</td>
+                <td>58</td>
+                <td>+56 9 0000 0003</td>
+                <td>paciente03@ejemplo.invalid</td>
+                <td>02-09-2026</td>
+              </tr>
+            
+
+              <tr>
+                <td class="demo-table__strong">Paciente Demo 04</td>
+                <td>99.999.004-D</td>
+                <td>27</td>
+                <td>+56 9 0000 0004</td>
+                <td>paciente04@ejemplo.invalid</td>
+                <td>28-08-2026</td>
+              </tr>
+            
+
+              <tr>
+                <td class="demo-table__strong">Paciente Demo 05</td>
+                <td>99.999.005-D</td>
+                <td>63</td>
+                <td>+56 9 0000 0005</td>
+                <td>paciente05@ejemplo.invalid</td>
+                <td>26-08-2026</td>
+              </tr>
+            
+          </tbody>
+        </table>
+      </div>
+
+      <p class="demo-note">
+        La ficha del paciente con sus pestañas se incorpora en una etapa posterior.
+      </p>
+    </article>
+  </section></div>
+<div class="app-area is-hidden" data-app-area="clinical"><section class="demo-page" aria-labelledby="clinical-page-title">
+    <header>
+      <p class="demo-page__eyebrow">Área funcional</p>
+      <h1 id="clinical-page-title">Clínica</h1>
+      <p class="demo-page__description">
+        Aquí se registra la atención del paciente y se origina la información que después
+        utilizan Óptica, las recetas y los documentos.
+      </p>
+    </header>
+
+    <div class="demo-toolbar">
+      <p class="demo-toolbar__hint">
+        Paciente seleccionado: Paciente Demo 01 · Profesional Demo A
+      </p>
+
+      <div class="demo-toolbar__actions">
+        <button type="button" class="demo-button" data-open="encounter">
+          Nueva atención
+        </button>
+      </div>
+    </div>
+
+    <p class="demo-notice is-hidden" data-area-notice><span></span><button type="button" class="demo-notice__close" data-notice-close>Entendido</button></p>
+
+    <article class="demo-panel">
+      <p class="demo-panel__title">Atenciones registradas</p>
+
+      <div class="demo-table__wrap">
+        <table class="demo-table">
+          <thead>
+            <tr>
+              <th scope="col">Paciente</th>
+              <th scope="col">Fecha</th>
+              <th scope="col">Hora</th>
+              <th scope="col">Profesional</th>
+              <th scope="col">Programa</th>
+              <th scope="col">Motivo</th>
+              <th scope="col">Estado</th>
+            </tr>
+          </thead>
+          <tbody>
+            
+              <tr>
+                <td class="demo-table__strong">Paciente Demo 01</td>
+                <td>08-09-2026</td>
+                <td>09:40</td>
+                <td>Profesional Demo A</td>
+                <td>Salud Visual</td>
+                <td>Control de visión</td>
+                <td><span class="demo-badge">Registrada</span></td>
+              </tr>
+            
+
+              <tr>
+                <td class="demo-table__strong">Paciente Demo 02</td>
+                <td>05-09-2026</td>
+                <td>11:15</td>
+                <td>Profesional Demo A</td>
+                <td>Salud Visual</td>
+                <td>Molestia visual al leer</td>
+                <td><span class="demo-badge">Registrada</span></td>
+              </tr>
+            
+
+              <tr>
+                <td class="demo-table__strong">Paciente Demo 03</td>
+                <td>02-09-2026</td>
+                <td>15:05</td>
+                <td>Profesional Demo B</td>
+                <td>Salud Visual</td>
+                <td>Screening en operativo</td>
+                <td><span class="demo-badge">Registrada</span></td>
+              </tr>
+            
+
+              <tr>
+                <td class="demo-table__strong">Paciente Demo 04</td>
+                <td>28-08-2026</td>
+                <td>10:20</td>
+                <td>Profesional Demo B</td>
+                <td>Salud Visual</td>
+                <td>Control posterior a derivación</td>
+                <td><span class="demo-badge">Registrada</span></td>
+              </tr>
+            
+          </tbody>
+        </table>
+      </div>
+    </article>
+
+    <article class="demo-panel">
+      <p class="demo-panel__title">Resultado de la atención del 08-09-2026</p>
+      <p class="demo-panel__hint">
+        Lo que la atención deja disponible para el resto de la plataforma.
+      </p>
+
+      <dl class="demo-facts">
+        <div>
+          <dt class="demo-facts__term">Paciente</dt>
+          <dd class="demo-facts__value">Paciente Demo 01</dd>
+        </div>
+        <div>
+          <dt class="demo-facts__term">Profesional</dt>
+          <dd class="demo-facts__value">Profesional Demo A</dd>
+        </div>
+        <div>
+          <dt class="demo-facts__term">Receta emitida</dt>
+          <dd class="demo-facts__value">RD-2026-014</dd>
+        </div>
+        <div>
+          <dt class="demo-facts__term">Documentos adjuntos</dt>
+          <dd class="demo-facts__value">Autorrefractometría y receta en PDF</dd>
+        </div>
+      </dl>
+
+      <p class="demo-note">
+        La anamnesis y el detalle clínico completo no se representan en esta demostración.
+      </p>
+    </article>
+  </section></div>
+<div class="app-area is-hidden" data-app-area="prescriptions"><section class="demo-page" aria-labelledby="prescriptions-page-title">
+    <header>
+      <p class="demo-page__eyebrow">Área funcional</p>
+      <h1 id="prescriptions-page-title">Recetas</h1>
+      <p class="demo-page__description">
+        Las recetas se generan en Clínica y quedan asociadas al paciente. Una receta
+        anterior nunca se reemplaza en silencio: se conserva el historial.
+      </p>
+    </header>
+
+    <div class="demo-toolbar">
+      <p class="demo-toolbar__hint">
+        Una receta no se crea desde aquí: se emite dentro de la atención en Clínica y se
+        guarda automáticamente en los documentos del paciente.
+      </p>
+    </div>
+
+    <article class="demo-panel">
+      <p class="demo-panel__title">Historial de recetas</p>
+
+      <div class="demo-table__wrap">
+        <table class="demo-table">
+          <thead>
+            <tr>
+              <th scope="col">Receta</th>
+              <th scope="col">Paciente</th>
+              <th scope="col">Fecha</th>
+              <th scope="col">Profesional</th>
+              <th scope="col">Tipo de lentes</th>
+            </tr>
+          </thead>
+          <tbody>
+            
+              <tr>
+                <td class="demo-table__strong">RD-2026-014</td>
+                <td>Paciente Demo 01</td>
+                <td>08-09-2026</td>
+                <td>Profesional Demo A</td>
+                <td>Multifocal</td>
+              </tr>
+            
+
+              <tr>
+                <td class="demo-table__strong">RD-2025-092</td>
+                <td>Paciente Demo 01</td>
+                <td>12-07-2025</td>
+                <td>Profesional Demo B</td>
+                <td>Lejos</td>
+              </tr>
+            
+
+              <tr>
+                <td class="demo-table__strong">RD-2026-011</td>
+                <td>Paciente Demo 03</td>
+                <td>02-09-2026</td>
+                <td>Profesional Demo B</td>
+                <td>Cerca</td>
+              </tr>
+            
+          </tbody>
+        </table>
+      </div>
+
+      <p class="demo-note">
+        La regla que determina cuál receta se considera vigente todavía no está definida
+        por CSA, por lo que aquí no se marca ninguna como tal.
+      </p>
+    </article>
+
+    
+      <article class="demo-panel">
+        <p class="demo-panel__title">Receta utilizada en esta demostración</p>
+        <p class="demo-panel__hint">
+          RD-2026-014 · Paciente Demo 01 · 08-09-2026 ·
+          Profesional Demo A
+        </p>
+
+        <div class="demo-table__wrap">
+          <table class="demo-table">
+            <thead>
+              <tr>
+                <th scope="col">Ojo</th>
+                <th scope="col">Agudeza visual</th>
+                <th scope="col">Esfera</th>
+                <th scope="col">Cilindro</th>
+                <th scope="col">Eje</th>
+              </tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td class="demo-table__strong">Ojo derecho</td>
+                  <td>20/25</td>
+                  <td>-1.25</td>
+                  <td>-0.50</td>
+                  <td>180</td>
+                </tr>
+              
+
+                <tr>
+                  <td class="demo-table__strong">Ojo izquierdo</td>
+                  <td>20/30</td>
+                  <td>-1.50</td>
+                  <td>-0.75</td>
+                  <td>170</td>
+                </tr>
+              
+            </tbody>
+          </table>
+        </div>
+
+        <dl class="demo-facts demo-facts--spaced">
+          <div>
+            <dt class="demo-facts__term">DP de lejos</dt>
+            <dd class="demo-facts__value">62 mm</dd>
+          </div>
+          <div>
+            <dt class="demo-facts__term">DP de cerca</dt>
+            <dd class="demo-facts__value">59 mm</dd>
+          </div>
+          <div>
+            <dt class="demo-facts__term">Adición</dt>
+            <dd class="demo-facts__value">+1.75</dd>
+          </div>
+          <div>
+            <dt class="demo-facts__term">Uso de lentes</dt>
+            <dd class="demo-facts__value">Permanente</dd>
+          </div>
+          <div>
+            <dt class="demo-facts__term">Diagnóstico</dt>
+            <dd class="demo-facts__value">Miopía leve con astigmatismo</dd>
+          </div>
+          <div>
+            <dt class="demo-facts__term">Indicaciones</dt>
+            <dd class="demo-facts__value">Uso permanente. Control en doce meses.</dd>
+          </div>
+        </dl>
+
+        <p class="demo-note">
+          Los valores son ficticios. Esta pantalla no realiza ningún cálculo óptico.
+        </p>
+      </article>
+    
+  </section></div>
+<div class="app-area is-hidden" data-app-area="documents"><section class="demo-page" aria-labelledby="documents-page-title">
+    <header>
+      <p class="demo-page__eyebrow">Área funcional</p>
+      <h1 id="documents-page-title">Documentos</h1>
+      <p class="demo-page__description">
+        Exámenes y documentos asociados al paciente. Pueden cargarse durante la atención
+        o más tarde, sin bloquear el trabajo del profesional.
+      </p>
+    </header>
+
+    <div class="demo-toolbar">
+      <p class="demo-toolbar__hint">Exámenes y archivos asociados al paciente.</p>
+
+      <div class="demo-toolbar__actions">
+        <button type="button" class="demo-button" data-open="document">
+          Adjuntar documento
+        </button>
+      </div>
+    </div>
+
+    <p class="demo-notice is-hidden" data-area-notice><span></span><button type="button" class="demo-notice__close" data-notice-close>Entendido</button></p>
+
+    <article class="demo-panel">
+      <p class="demo-panel__title">Documentos y exámenes</p>
+
+      <div class="demo-table__wrap">
+        <table class="demo-table">
+          <thead>
+            <tr>
+              <th scope="col">Documento</th>
+              <th scope="col">Categoría</th>
+              <th scope="col">Formato</th>
+              <th scope="col">Fecha</th>
+              <th scope="col">Paciente</th>
+              <th scope="col">Contexto</th>
+            </tr>
+          </thead>
+          <tbody>
+            
+              <tr>
+                <td class="demo-table__strong">Autorrefractometría</td>
+                <td>Autorrefractometría</td>
+                <td>JPG</td>
+                <td>08-09-2026</td>
+                <td>Paciente Demo 01</td>
+                <td>Atención del 08-09-2026</td>
+              </tr>
+            
+
+              <tr>
+                <td class="demo-table__strong">Receta de lentes</td>
+                <td>Receta de lentes</td>
+                <td>PDF</td>
+                <td>08-09-2026</td>
+                <td>Paciente Demo 01</td>
+                <td>Generada por el sistema</td>
+              </tr>
+            
+
+              <tr>
+                <td class="demo-table__strong">Lensometría</td>
+                <td>Lensometría</td>
+                <td>JPG</td>
+                <td>05-09-2026</td>
+                <td>Paciente Demo 02</td>
+                <td>Atención del 05-09-2026</td>
+              </tr>
+            
+
+              <tr>
+                <td class="demo-table__strong">Retinografía</td>
+                <td>Retinografía</td>
+                <td>PDF</td>
+                <td>02-09-2026</td>
+                <td>Paciente Demo 03</td>
+                <td>Emitida por el equipo de examen</td>
+              </tr>
+            
+
+              <tr>
+                <td class="demo-table__strong">Borrador de certificado de derivación</td>
+                <td>Borrador de certificado de derivación</td>
+                <td>PDF</td>
+                <td>28-08-2026</td>
+                <td>Paciente Demo 04</td>
+                <td>Atención del 28-08-2026</td>
+              </tr>
+            
+          </tbody>
+        </table>
+      </div>
+
+      <p class="demo-note">
+        Los archivos no existen: esta demostración no sube, almacena ni descarga documentos.
+      </p>
+    </article>
+  </section></div>
+<div class="app-area is-hidden" data-app-area="optics"><section class="demo-page" aria-labelledby="optics-page-title">
+    <header>
+      <p class="demo-page__eyebrow">Área funcional</p>
+      <h1 id="optics-page-title">Óptica</h1>
+      <p class="demo-page__description">
+        Óptica trabaja sobre el mismo paciente atendido en Clínica y reutiliza su receta
+        sin volver a transcribirla.
+      </p>
+    </header>
+
+    <div class="demo-toolbar">
+      <p class="demo-toolbar__hint">
+        Paciente Demo 01 · Receta RD-2026-014 emitida en Clínica
+      </p>
+
+      <div class="demo-toolbar__actions">
+        <button type="button" class="demo-button" data-open="quote">
+          Nueva cotización
+        </button>
+      </div>
+    </div>
+
+    <p class="demo-notice is-hidden" data-area-notice><span></span><button type="button" class="demo-notice__close" data-notice-close>Entendido</button></p>
+
+    
+      <article class="demo-panel">
+        <p class="demo-panel__title">Paciente seleccionado</p>
+
+        <dl class="demo-facts">
+          <div>
+            <dt class="demo-facts__term">Nombre</dt>
+            <dd class="demo-facts__value">Paciente Demo 01</dd>
+          </div>
+          <div>
+            <dt class="demo-facts__term">RUT</dt>
+            <dd class="demo-facts__value">99.999.001-D</dd>
+          </div>
+          <div>
+            <dt class="demo-facts__term">Edad</dt>
+            <dd class="demo-facts__value">42</dd>
+          </div>
+          <div>
+            <dt class="demo-facts__term">Teléfono</dt>
+            <dd class="demo-facts__value">+56 9 0000 0001</dd>
+          </div>
+        </dl>
+
+        <p class="demo-note">
+          Óptica accede a la información necesaria para la venta, no a la ficha clínica
+          completa. El alcance exacto lo define CSA junto con la matriz de permisos.
+        </p>
+      </article>
+    
+
+    
+      <article class="demo-panel">
+        <p class="demo-panel__title">Receta del paciente</p>
+
+        <p class="demo-source">
+          <span class="demo-source__label">Información proveniente de Clínica.</span>
+          <span>
+            Receta RD-2026-014 emitida el 08-09-2026 por
+            Profesional Demo A. Óptica no vuelve a digitar estos valores.
+          </span>
+        </p>
+
+        <div class="demo-table__wrap demo-facts--spaced">
+          <table class="demo-table">
+            <thead>
+              <tr>
+                <th scope="col">Ojo</th>
+                <th scope="col">Agudeza visual</th>
+                <th scope="col">Esfera</th>
+                <th scope="col">Cilindro</th>
+                <th scope="col">Eje</th>
+              </tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td class="demo-table__strong">Ojo derecho</td>
+                  <td>20/25</td>
+                  <td>-1.25</td>
+                  <td>-0.50</td>
+                  <td>180</td>
+                </tr>
+              
+
+                <tr>
+                  <td class="demo-table__strong">Ojo izquierdo</td>
+                  <td>20/30</td>
+                  <td>-1.50</td>
+                  <td>-0.75</td>
+                  <td>170</td>
+                </tr>
+              
+            </tbody>
+          </table>
+        </div>
+
+        <dl class="demo-facts demo-facts--spaced">
+          <div>
+            <dt class="demo-facts__term">DP de lejos</dt>
+            <dd class="demo-facts__value">62 mm</dd>
+          </div>
+          <div>
+            <dt class="demo-facts__term">DP de cerca</dt>
+            <dd class="demo-facts__value">59 mm</dd>
+          </div>
+          <div>
+            <dt class="demo-facts__term">Adición</dt>
+            <dd class="demo-facts__value">+1.75</dd>
+          </div>
+          <div>
+            <dt class="demo-facts__term">Tipo de lentes</dt>
+            <dd class="demo-facts__value">Multifocal</dd>
+          </div>
+        </dl>
+      </article>
+    
+
+    <article class="demo-panel">
+      <p class="demo-panel__title">Historial de compras</p>
+
+      <div class="demo-table__wrap">
+        <table class="demo-table">
+          <thead>
+            <tr>
+              <th scope="col">Fecha</th>
+              <th scope="col">Detalle</th>
+              <th scope="col">Monto</th>
+              <th scope="col">Estado</th>
+            </tr>
+          </thead>
+          <tbody>
+            
+              <tr>
+                <td class="demo-table__strong">12-07-2025</td>
+                <td>Armazón Demo Clásico y cristal monofocal con antirreflejo</td>
+                <td>$ 189.000</td>
+                <td><span class="demo-badge">Entregado</span></td>
+              </tr>
+            
+
+              <tr>
+                <td class="demo-table__strong">03-02-2024</td>
+                <td>Cristal monofocal con antirreflejo</td>
+                <td>$ 96.000</td>
+                <td><span class="demo-badge">Entregado</span></td>
+              </tr>
+            
+          </tbody>
+        </table>
+      </div>
+
+      <p class="demo-note">
+        La secuencia entre cotización, venta y orden óptica todavía no está cerrada por
+        CSA. Esta demostración muestra el punto de partida, no el flujo completo.
+      </p>
+    </article>
+  </section></div>
+<div class="app-area is-hidden" data-app-area="products"><section class="demo-page" aria-labelledby="products-page-title">
+    <header>
+      <p class="demo-page__eyebrow">Área funcional</p>
+      <h1 id="products-page-title">Productos</h1>
+      <p class="demo-page__description">
+        Catálogo de armazones y de cristales con tratamiento. Cada combinación de cristal
+        y tratamiento se maneja como un único producto con su propio SKU.
+      </p>
+    </header>
+
+    <div class="demo-toolbar">
+      <p class="demo-toolbar__hint">Catálogo de armazones, cristales y tratamientos.</p>
+
+      <div class="demo-toolbar__actions">
+        <button type="button" class="demo-button" data-open="product">
+          Nuevo producto
+        </button>
+      </div>
+    </div>
+
+    <p class="demo-notice is-hidden" data-area-notice><span></span><button type="button" class="demo-notice__close" data-notice-close>Entendido</button></p>
+
+    <article class="demo-panel">
+      <p class="demo-panel__title">Catálogo</p>
+
+      <div class="demo-table__wrap">
+        <table class="demo-table">
+          <thead>
+            <tr>
+              <th scope="col">SKU</th>
+              <th scope="col">Descripción</th>
+              <th scope="col">Categoría</th>
+              <th scope="col">Proveedor</th>
+              <th scope="col">Precio</th>
+              <th scope="col">Estado</th>
+            </tr>
+          </thead>
+          <tbody>
+            
+              <tr>
+                <td class="demo-table__strong">ARM-DEMO-001</td>
+                <td>Armazón Demo Clásico, color negro, talla 52</td>
+                <td>Armazón</td>
+                <td>Proveedor Demo Uno</td>
+                <td>$ 74.000</td>
+                <td>
+                  <span
+                    class="demo-badge"
+                    
+                  >
+                    Activo
+                  </span>
+                </td>
+              </tr>
+            
+
+              <tr>
+                <td class="demo-table__strong">ARM-DEMO-002</td>
+                <td>Armazón Demo Liviano, color café, talla 54</td>
+                <td>Armazón</td>
+                <td>Proveedor Demo Uno</td>
+                <td>$ 89.000</td>
+                <td>
+                  <span
+                    class="demo-badge"
+                    
+                  >
+                    Activo
+                  </span>
+                </td>
+              </tr>
+            
+
+              <tr>
+                <td class="demo-table__strong">CRI-DEMO-160-AR</td>
+                <td>Cristal monofocal 1.60 con antirreflejo premium</td>
+                <td>Cristal con tratamiento</td>
+                <td>Laboratorio Demo Norte</td>
+                <td>$ 115.000</td>
+                <td>
+                  <span
+                    class="demo-badge"
+                    
+                  >
+                    Activo
+                  </span>
+                </td>
+              </tr>
+            
+
+              <tr>
+                <td class="demo-table__strong">CRI-DEMO-159-FO</td>
+                <td>Cristal multifocal 1.59 con filtro y antirreflejo</td>
+                <td>Cristal con tratamiento</td>
+                <td>Laboratorio Demo Norte</td>
+                <td>$ 186.000</td>
+                <td>
+                  <span
+                    class="demo-badge"
+                    
+                  >
+                    Activo
+                  </span>
+                </td>
+              </tr>
+            
+
+              <tr>
+                <td class="demo-table__strong">CRI-DEMO-150-BA</td>
+                <td>Cristal monofocal 1.50 básico</td>
+                <td>Cristal con tratamiento</td>
+                <td>Laboratorio Demo Sur</td>
+                <td>$ 58.000</td>
+                <td>
+                  <span
+                    class="demo-badge demo-badge--off"
+                   
+                  >
+                    Inactivo
+                  </span>
+                </td>
+              </tr>
+            
+          </tbody>
+        </table>
+      </div>
+
+      <p class="demo-note">
+        Los costos, márgenes y la administración del catálogo no se representan aquí.
+      </p>
+    </article>
+  </section></div>
+<div class="app-area is-hidden" data-app-area="inventory"><section class="demo-page" aria-labelledby="inventory-page-title">
+    <header>
+      <p class="demo-page__eyebrow">Área funcional</p>
+      <h1 id="inventory-page-title">Inventario</h1>
+      <p class="demo-page__description">
+        Existencias por producto y registro de entradas, salidas y ajustes con su motivo
+        y su responsable.
+      </p>
+    </header>
+
+    <div class="demo-toolbar">
+      <p class="demo-toolbar__hint">Entradas, salidas y ajustes de stock.</p>
+
+      <div class="demo-toolbar__actions">
+        <button type="button" class="demo-button" data-open="movement">
+          Registrar movimiento
+        </button>
+      </div>
+    </div>
+
+    <p class="demo-notice is-hidden" data-area-notice><span></span><button type="button" class="demo-notice__close" data-notice-close>Entendido</button></p>
+
+    <article class="demo-panel">
+      <p class="demo-panel__title">Existencias</p>
+
+      <div class="demo-table__wrap">
+        <table class="demo-table">
+          <thead>
+            <tr>
+              <th scope="col">SKU</th>
+              <th scope="col">Descripción</th>
+              <th scope="col">Stock</th>
+              <th scope="col">Estado</th>
+            </tr>
+          </thead>
+          <tbody>
+            
+              <tr>
+                <td class="demo-table__strong">ARM-DEMO-001</td>
+                <td>Armazón Demo Clásico</td>
+                <td>24</td>
+                <td>
+                  <span class="demo-badge" >
+                    Disponible
+                  </span>
+                </td>
+              </tr>
+            
+
+              <tr>
+                <td class="demo-table__strong">ARM-DEMO-002</td>
+                <td>Armazón Demo Liviano</td>
+                <td>6</td>
+                <td>
+                  <span class="demo-badge" >
+                    Disponible
+                  </span>
+                </td>
+              </tr>
+            
+
+              <tr>
+                <td class="demo-table__strong">CRI-DEMO-160-AR</td>
+                <td>Cristal monofocal 1.60 con antirreflejo premium</td>
+                <td>41</td>
+                <td>
+                  <span class="demo-badge" >
+                    Disponible
+                  </span>
+                </td>
+              </tr>
+            
+
+              <tr>
+                <td class="demo-table__strong">CRI-DEMO-159-FO</td>
+                <td>Cristal multifocal 1.59 con filtro</td>
+                <td>0</td>
+                <td>
+                  <span class="demo-badge demo-badge--wait">
+                    Sin stock
+                  </span>
+                </td>
+              </tr>
+            
+          </tbody>
+        </table>
+      </div>
+    </article>
+
+    <article class="demo-panel">
+      <p class="demo-panel__title">Movimientos</p>
+
+      <div class="demo-table__wrap">
+        <table class="demo-table">
+          <thead>
+            <tr>
+              <th scope="col">Fecha</th>
+              <th scope="col">SKU</th>
+              <th scope="col">Tipo</th>
+              <th scope="col">Cantidad</th>
+              <th scope="col">Usuario</th>
+              <th scope="col">Motivo</th>
+            </tr>
+          </thead>
+          <tbody>
+            
+              <tr>
+                <td class="demo-table__strong">09-09-2026</td>
+                <td>ARM-DEMO-001</td>
+                <td>Entrada</td>
+                <td>+12</td>
+                <td>Usuario Demo Inventario</td>
+                <td>Recepción de proveedor</td>
+              </tr>
+            
+
+              <tr>
+                <td class="demo-table__strong">08-09-2026</td>
+                <td>CRI-DEMO-160-AR</td>
+                <td>Salida</td>
+                <td>-2</td>
+                <td>Usuario Demo Óptica</td>
+                <td>Preparación de pedido</td>
+              </tr>
+            
+
+              <tr>
+                <td class="demo-table__strong">05-09-2026</td>
+                <td>ARM-DEMO-002</td>
+                <td>Ajuste</td>
+                <td>-1</td>
+                <td>Usuario Demo Inventario</td>
+                <td>Corrección de conteo</td>
+              </tr>
+            
+          </tbody>
+        </table>
+      </div>
+
+      <p class="demo-note">
+        Cuándo y cómo una venta genera un movimiento de stock es una decisión que CSA
+        todavía no ha cerrado, por lo que aquí no se representa ninguna automatización.
+      </p>
+    </article>
+  </section></div>
+<div class="app-area is-hidden" data-app-area="sales"><section class="demo-page" aria-labelledby="sales-page-title">
+    <header>
+      <p class="demo-page__eyebrow">Área funcional</p>
+      <h1 id="sales-page-title">Ventas</h1>
+      <p class="demo-page__description">
+        Registro de ventas con su total, lo efectivamente pagado y el saldo pendiente.
+        El pago puede combinar más de un medio.
+      </p>
+    </header>
+
+    <div class="demo-toolbar">
+      <p class="demo-toolbar__hint">Ventas y formas de pago registradas.</p>
+
+      <div class="demo-toolbar__actions">
+        <button type="button" class="demo-button" data-open="payment">
+          Registrar pago
+        </button>
+      </div>
+    </div>
+
+    <p class="demo-notice is-hidden" data-area-notice><span></span><button type="button" class="demo-notice__close" data-notice-close>Entendido</button></p>
+
+    <article class="demo-panel">
+      <p class="demo-panel__title">Ventas registradas</p>
+
+      <div class="demo-table__wrap">
+        <table class="demo-table">
+          <thead>
+            <tr>
+              <th scope="col">Venta</th>
+              <th scope="col">Paciente</th>
+              <th scope="col">Fecha</th>
+              <th scope="col">Total</th>
+              <th scope="col">Pagado</th>
+              <th scope="col">Saldo</th>
+              <th scope="col">Medios de pago</th>
+              <th scope="col">Estado</th>
+            </tr>
+          </thead>
+          <tbody>
+            
+              <tr>
+                <td class="demo-table__strong">VD-2026-0412</td>
+                <td>Paciente Demo 01</td>
+                <td>09-09-2026</td>
+                <td>$ 260.000</td>
+                <td>$ 260.000</td>
+                <td>$ 0</td>
+                <td>Débito y efectivo</td>
+                <td>
+                  <span
+                    class="demo-badge"
+                    
+                  >
+                    Registrada
+                  </span>
+                </td>
+              </tr>
+            
+
+              <tr>
+                <td class="demo-table__strong">VD-2026-0411</td>
+                <td>Paciente Demo 02</td>
+                <td>08-09-2026</td>
+                <td>$ 147.000</td>
+                <td>$ 70.000</td>
+                <td>$ 77.000</td>
+                <td>Transferencia</td>
+                <td>
+                  <span
+                    class="demo-badge demo-badge--wait"
+                   
+                  >
+                    Con saldo pendiente
+                  </span>
+                </td>
+              </tr>
+            
+
+              <tr>
+                <td class="demo-table__strong">VD-2026-0409</td>
+                <td>Paciente Demo 03</td>
+                <td>05-09-2026</td>
+                <td>$ 198.000</td>
+                <td>$ 198.000</td>
+                <td>$ 0</td>
+                <td>Caja Los Andes</td>
+                <td>
+                  <span
+                    class="demo-badge"
+                    
+                  >
+                    Registrada
+                  </span>
+                </td>
+              </tr>
+            
+
+              <tr>
+                <td class="demo-table__strong">VD-2026-0405</td>
+                <td>Paciente Demo 05</td>
+                <td>02-09-2026</td>
+                <td>$ 89.000</td>
+                <td>$ 89.000</td>
+                <td>$ 0</td>
+                <td>Descuento por planilla</td>
+                <td>
+                  <span
+                    class="demo-badge"
+                    
+                  >
+                    Registrada
+                  </span>
+                </td>
+              </tr>
+            
+          </tbody>
+        </table>
+      </div>
+
+      <p class="demo-note">
+        La secuencia entre cotización, pago, venta y orden óptica todavía no está cerrada
+        por CSA. Esta pantalla muestra registros de ejemplo y no afirma ese flujo.
+      </p>
+    </article>
+  </section></div>
+<div class="app-area is-hidden" data-app-area="dashboards"><section class="demo-page" aria-labelledby="dashboards-page-title">
+    <header>
+      <p class="demo-page__eyebrow">Área funcional</p>
+      <h1 id="dashboards-page-title">Dashboards</h1>
+      <p class="demo-page__description">
+        Óptica y Comercial no necesitan lo mismo. Óptica sigue la operación del día;
+        Comercial sigue un periodo. Todos los valores son de ejemplo.
+      </p>
+    </header>
+
+    <div class="demo-toolbar">
+      <p class="demo-toolbar__hint">
+        Filtros generales previstos. Se muestran para revisar el alcance, todavía no
+        filtran nada.
+      </p>
+
+      <div class="demo-toolbar__actions">
+        <span class="demo-chip">Hoy</span>
+        <span class="demo-chip">Semana</span>
+        <span class="demo-chip demo-chip--on">Mes</span>
+        <span class="demo-chip">Rango personalizado</span>
+      </div>
+    </div>
+
+    <article class="demo-panel">
+      <p class="demo-panel__title">Dashboard Óptica</p>
+      <p class="demo-panel__hint">
+        Datos de ejemplo. Actualizado 17:20. La inmediatez es una necesidad reconocida por
+        CSA, pero el mecanismo técnico para lograrla todavía no está definido y esta
+        pantalla no se actualiza sola.
+      </p>
+
+      <div class="demo-grid">
+        
+          <div class="demo-card">
+            <span class="demo-card__label">Monto vendido</span>
+            <span class="demo-card__value">$ 3.480.000</span>
+            <span class="demo-card__hint">Periodo de ejemplo</span>
+          </div>
+        
+
+          <div class="demo-card">
+            <span class="demo-card__label">Número de ventas</span>
+            <span class="demo-card__value">18</span>
+            <span class="demo-card__hint">Periodo de ejemplo</span>
+          </div>
+        
+
+          <div class="demo-card">
+            <span class="demo-card__label">Número de cotizaciones</span>
+            <span class="demo-card__value">31</span>
+            <span class="demo-card__hint">Periodo de ejemplo</span>
+          </div>
+        
+
+          <div class="demo-card">
+            <span class="demo-card__label">Conversión</span>
+            <span class="demo-card__value">58 %</span>
+            <span class="demo-card__hint">Definición de paciente elegible pendiente</span>
+          </div>
+        
+
+          <div class="demo-card">
+            <span class="demo-card__label">Ticket promedio</span>
+            <span class="demo-card__value">$ 193.000</span>
+            <span class="demo-card__hint">Periodo de ejemplo</span>
+          </div>
+        
+
+          <div class="demo-card">
+            <span class="demo-card__label">Órdenes pendientes</span>
+            <span class="demo-card__value">7</span>
+            <span class="demo-card__hint">Periodo de ejemplo</span>
+          </div>
+        
+      </div>
+    </article>
+
+    <article class="demo-panel">
+      <p class="demo-panel__title">Ventas por forma de pago</p>
+
+      <div class="demo-table__wrap">
+        <table class="demo-table">
+          <thead>
+            <tr>
+              <th scope="col">Forma de pago</th>
+              <th scope="col">Monto</th>
+            </tr>
+          </thead>
+          <tbody>
+            
+              <tr>
+                <td class="demo-table__strong">Débito</td>
+                <td>$ 1.240.000</td>
+              </tr>
+            
+
+              <tr>
+                <td class="demo-table__strong">Efectivo</td>
+                <td>$ 760.000</td>
+              </tr>
+            
+
+              <tr>
+                <td class="demo-table__strong">Transferencia</td>
+                <td>$ 690.000</td>
+              </tr>
+            
+
+              <tr>
+                <td class="demo-table__strong">Caja Los Andes</td>
+                <td>$ 480.000</td>
+              </tr>
+            
+
+              <tr>
+                <td class="demo-table__strong">Descuento por planilla</td>
+                <td>$ 310.000</td>
+              </tr>
+            
+          </tbody>
+        </table>
+      </div>
+    </article>
+
+    <article class="demo-panel">
+      <p class="demo-panel__title">Dashboard CRM Comercial</p>
+      <p class="demo-panel__hint">
+        Datos de ejemplo. Periodo: septiembre 2026. El seguimiento comercial se revisa por
+        periodo y no requiere actualización inmediata.
+      </p>
+
+      <div class="demo-grid">
+        
+          <div class="demo-card">
+            <span class="demo-card__label">Empresas activas</span>
+            <span class="demo-card__value">12</span>
+            <span class="demo-card__hint">Periodo de ejemplo</span>
+          </div>
+        
+
+          <div class="demo-card">
+            <span class="demo-card__label">Oportunidades abiertas</span>
+            <span class="demo-card__value">9</span>
+            <span class="demo-card__hint">Periodo de ejemplo</span>
+          </div>
+        
+
+          <div class="demo-card">
+            <span class="demo-card__label">Valor potencial del pipeline</span>
+            <span class="demo-card__value">$ 18.400.000</span>
+            <span class="demo-card__hint">Periodo de ejemplo</span>
+          </div>
+        
+
+          <div class="demo-card">
+            <span class="demo-card__label">Negocios ganados</span>
+            <span class="demo-card__value">3</span>
+            <span class="demo-card__hint">Periodo de ejemplo</span>
+          </div>
+        
+
+          <div class="demo-card">
+            <span class="demo-card__label">Negocios perdidos</span>
+            <span class="demo-card__value">2</span>
+            <span class="demo-card__hint">Periodo de ejemplo</span>
+          </div>
+        
+
+          <div class="demo-card">
+            <span class="demo-card__label">Seguimientos de la semana</span>
+            <span class="demo-card__value">6</span>
+            <span class="demo-card__hint">Periodo de ejemplo</span>
+          </div>
+        
+      </div>
+
+      <p class="demo-note">
+        Las fórmulas de conversión y de paciente elegible siguen pendientes de definición
+        por CSA. Los porcentajes mostrados son ilustrativos.
+      </p>
+    </article>
+  </section></div>
+<div class="app-area is-hidden" data-app-area="users"><section class="demo-page" aria-labelledby="users-page-title">
+    <header>
+      <p class="demo-page__eyebrow">Área funcional</p>
+      <h1 id="users-page-title">Usuarios</h1>
+      <p class="demo-page__description">
+        Usuarios de CSA y el rol con el que trabajan. Identificar a un paciente no implica
+        poder ver toda su información: eso depende del rol.
+      </p>
+    </header>
+
+    <div class="demo-toolbar">
+      <p class="demo-toolbar__hint">Usuarios internos y su rol dentro de la plataforma.</p>
+
+      <div class="demo-toolbar__actions">
+        <button type="button" class="demo-button" data-open="user">
+          Nuevo usuario
+        </button>
+      </div>
+    </div>
+
+    <p class="demo-notice is-hidden" data-area-notice><span></span><button type="button" class="demo-notice__close" data-notice-close>Entendido</button></p>
+
+    <article class="demo-panel">
+      <p class="demo-panel__title">Usuarios</p>
+
+      <div class="demo-table__wrap">
+        <table class="demo-table">
+          <thead>
+            <tr>
+              <th scope="col">Nombre</th>
+              <th scope="col">Rol</th>
+              <th scope="col">Cargo</th>
+              <th scope="col">Correo</th>
+              <th scope="col">Estado</th>
+              <th scope="col">Último acceso</th>
+            </tr>
+          </thead>
+          <tbody>
+            
+              <tr>
+                <td class="demo-table__strong">Usuario Demo Administrador</td>
+                <td>Administrador</td>
+                <td>Dirección</td>
+                <td>usuario1@ejemplo.invalid</td>
+                <td>
+                  <span
+                    class="demo-badge"
+                    
+                  >
+                    Activo
+                  </span>
+                </td>
+                <td>10-09-2026 08:12</td>
+              </tr>
+            
+
+              <tr>
+                <td class="demo-table__strong">Usuario Demo Clínico</td>
+                <td>Profesional clínico</td>
+                <td>Profesional de salud</td>
+                <td>usuario2@ejemplo.invalid</td>
+                <td>
+                  <span
+                    class="demo-badge"
+                    
+                  >
+                    Activo
+                  </span>
+                </td>
+                <td>09-09-2026 17:40</td>
+              </tr>
+            
+
+              <tr>
+                <td class="demo-table__strong">Usuario Demo Óptica</td>
+                <td>Óptica/Ventas</td>
+                <td>Vendedor</td>
+                <td>usuario3@ejemplo.invalid</td>
+                <td>
+                  <span
+                    class="demo-badge"
+                    
+                  >
+                    Activo
+                  </span>
+                </td>
+                <td>09-09-2026 16:05</td>
+              </tr>
+            
+
+              <tr>
+                <td class="demo-table__strong">Usuario Demo Comercial</td>
+                <td>Comercial</td>
+                <td>Ejecutivo comercial</td>
+                <td>usuario4@ejemplo.invalid</td>
+                <td>
+                  <span
+                    class="demo-badge"
+                    
+                  >
+                    Activo
+                  </span>
+                </td>
+                <td>09-09-2026 12:33</td>
+              </tr>
+            
+
+              <tr>
+                <td class="demo-table__strong">Usuario Demo Caja</td>
+                <td>Caja</td>
+                <td>Administrativo</td>
+                <td>usuario5@ejemplo.invalid</td>
+                <td>
+                  <span
+                    class="demo-badge demo-badge--off"
+                   
+                  >
+                    Inactivo
+                  </span>
+                </td>
+                <td>22-08-2026 09:58</td>
+              </tr>
+            
+
+              <tr>
+                <td class="demo-table__strong">Usuario Demo Inventario</td>
+                <td>Inventario</td>
+                <td>Bodega</td>
+                <td>usuario6@ejemplo.invalid</td>
+                <td>
+                  <span
+                    class="demo-badge"
+                    
+                  >
+                    Activo
+                  </span>
+                </td>
+                <td>09-09-2026 10:47</td>
+              </tr>
+            
+          </tbody>
+        </table>
+      </div>
+
+      <p class="demo-note">
+        La matriz detallada de permisos por rol todavía no está definida por CSA. Esta
+        demostración no aplica ningún control de acceso: la autorización real corresponde
+        al backend.
+      </p>
+    </article>
+  </section></div>
+<div class="app-area is-hidden" data-app-area="audit"><section class="demo-page" aria-labelledby="audit-page-title">
+    <header>
+      <p class="demo-page__eyebrow">Área funcional</p>
+      <h1 id="audit-page-title">Auditoría</h1>
+      <p class="demo-page__description">
+        Registro de quién hizo qué y cuándo sobre la información sensible de la plataforma.
+      </p>
+    </header>
+
+    <article class="demo-panel">
+      <p class="demo-panel__title">Registro de actividad</p>
+
+      <div class="demo-table__wrap">
+        <table class="demo-table">
+          <thead>
+            <tr>
+              <th scope="col">Fecha</th>
+              <th scope="col">Hora</th>
+              <th scope="col">Usuario</th>
+              <th scope="col">Acción</th>
+              <th scope="col">Registro afectado</th>
+            </tr>
+          </thead>
+          <tbody>
+            
+              <tr>
+                <td class="demo-table__strong">09-09-2026</td>
+                <td>16:22</td>
+                <td>Usuario Demo Óptica</td>
+                <td>Consultó receta</td>
+                <td>Receta RD-2026-014</td>
+              </tr>
+            
+
+              <tr>
+                <td class="demo-table__strong">08-09-2026</td>
+                <td>09:58</td>
+                <td>Usuario Demo Clínico</td>
+                <td>Emitió receta</td>
+                <td>Receta RD-2026-014</td>
+              </tr>
+            
+
+              <tr>
+                <td class="demo-table__strong">08-09-2026</td>
+                <td>09:41</td>
+                <td>Usuario Demo Clínico</td>
+                <td>Registró atención</td>
+                <td>Atención de Paciente Demo 01</td>
+              </tr>
+            
+
+              <tr>
+                <td class="demo-table__strong">05-09-2026</td>
+                <td>11:20</td>
+                <td>Usuario Demo Administrador</td>
+                <td>Modificó datos de contacto</td>
+                <td>Paciente Demo 02</td>
+              </tr>
+            
+
+              <tr>
+                <td class="demo-table__strong">02-09-2026</td>
+                <td>15:12</td>
+                <td>Usuario Demo Inventario</td>
+                <td>Registró ajuste de stock</td>
+                <td>Producto ARM-DEMO-002</td>
+              </tr>
+            
+          </tbody>
+        </table>
+      </div>
+
+      <p class="demo-note">
+        El registro muestra el elemento afectado, no su contenido clínico. Qué acciones se
+        auditan y cómo se atribuyen cuando se comparte una cuenta son decisiones que CSA
+        todavía debe cerrar.
+      </p>
+    </article>
+  </section></div>
+<div class="app-area is-hidden" data-app-area="crm"><section class="demo-page" aria-labelledby="crm-page-title">
+      <header>
+        <p class="demo-page__eyebrow">Área funcional</p>
+        <h1 id="crm-page-title">CRM Comercial</h1>
+        <p class="demo-page__description">
+          A diferencia del resto de la plataforma, aquí la unidad de trabajo es la empresa,
+          no el paciente: empresas, contactos, oportunidades y seguimientos.
+        </p>
+      </header>
+
+      <div class="demo-toolbar">
+        <p class="demo-toolbar__hint">
+          Ejecutivo Demo 01 · Pipeline de programas de salud
+        </p>
+
+        <div class="demo-toolbar__actions">
+          <button type="button" class="demo-button" data-open="opportunity">
+            Nueva oportunidad
+          </button>
+          <button type="button" class="demo-button demo-button--ghost" data-open="company">
+            Nueva empresa
+          </button>
+          <button type="button" class="demo-button demo-button--ghost" data-open="followUp">
+            Nuevo seguimiento
+          </button>
+        </div>
+      </div>
+
+      <div class="crm-tabs" role="tablist" aria-label="Áreas del CRM Comercial">
+        <button type="button" class="demo-chip demo-chip--on" role="tab" id="tab-pipeline" aria-selected="true" aria-controls="crm-section-pipeline" data-crm-tab="pipeline">
+          Pipeline
+        </button>
+        <button type="button" class="demo-chip" role="tab" id="tab-companies" aria-selected="false" aria-controls="crm-section-companies" data-crm-tab="companies">
+          Empresas
+        </button>
+        <button type="button" class="demo-chip" role="tab" id="tab-contacts" aria-selected="false" aria-controls="crm-section-contacts" data-crm-tab="contacts">
+          Contactos
+        </button>
+        <button type="button" class="demo-chip" role="tab" id="tab-followups" aria-selected="false" aria-controls="crm-section-followups" data-crm-tab="followups">
+          Seguimientos
+        </button>
+      </div>
+
+      <p id="demo-notice" class="demo-notice is-hidden">
+        <span id="demo-notice-text"></span>
+        <button type="button" class="demo-notice__close" id="demo-notice-close">
+          Entendido
+        </button>
+      </p>
+
+      <article class="demo-panel" id="crm-section-pipeline" data-crm-section="pipeline" role="tabpanel" aria-labelledby="tab-pipeline">
+        <p class="demo-panel__title">Pipeline comercial</p>
+        <p class="demo-panel__hint">
+          Etapas definidas por CSA. Cada tarjeta abre el detalle de la oportunidad.
+        </p>
+
+        <div class="demo-pipeline">
+          <div class="demo-pipeline__column">
+            <div class="demo-pipeline__head">
+              <p class="demo-pipeline__name">Prospecto</p>
+              <p class="demo-pipeline__meta">1 · $ 2.100.000</p>
+            </div>
+            <div class="demo-pipeline__body">
+              <button type="button" class="demo-deal" data-deal="OP-01">
+                <span class="demo-deal__title">Salud Visual</span>
+                <span class="demo-deal__company">Empresa Demo Oriente</span>
+                <span class="demo-deal__value">$ 2.100.000</span>
+                <span class="demo-deal__foot">Ejecutivo Demo 01 · Primer contacto telefónico</span>
+              </button>
+              <button type="button" class="demo-pipeline__add" data-open="opportunity" aria-label="Agregar oportunidad en Prospecto">
+                + Oportunidad
+              </button>
+            </div>
+          </div>
+
+          <div class="demo-pipeline__column">
+            <div class="demo-pipeline__head">
+              <p class="demo-pipeline__name">Contactado</p>
+              <p class="demo-pipeline__meta">1 · $ 1.950.000</p>
+            </div>
+            <div class="demo-pipeline__body">
+              <button type="button" class="demo-deal" data-deal="OP-02">
+                <span class="demo-deal__title">Salud Visual</span>
+                <span class="demo-deal__company">Empresa Demo Centro</span>
+                <span class="demo-deal__value">$ 1.950.000</span>
+                <span class="demo-deal__foot">Ejecutivo Demo 01 · Enviar información de programas</span>
+              </button>
+              <button type="button" class="demo-pipeline__add" data-open="opportunity" aria-label="Agregar oportunidad en Contactado">
+                + Oportunidad
+              </button>
+            </div>
+          </div>
+
+          <div class="demo-pipeline__column">
+            <div class="demo-pipeline__head">
+              <p class="demo-pipeline__name">Reunión agendada</p>
+              <p class="demo-pipeline__meta">1 · $ 2.800.000</p>
+            </div>
+            <div class="demo-pipeline__body">
+              <button type="button" class="demo-deal" data-deal="OP-03">
+                <span class="demo-deal__title">Salud Cardiovascular</span>
+                <span class="demo-deal__company">Empresa Demo Sur</span>
+                <span class="demo-deal__value">$ 2.800.000</span>
+                <span class="demo-deal__foot">Ejecutivo Demo 02 · Reunión de presentación</span>
+              </button>
+              <button type="button" class="demo-pipeline__add" data-open="opportunity" aria-label="Agregar oportunidad en Reunión agendada">
+                + Oportunidad
+              </button>
+            </div>
+          </div>
+
+          <div class="demo-pipeline__column">
+            <div class="demo-pipeline__head">
+              <p class="demo-pipeline__name">Propuesta enviada</p>
+              <p class="demo-pipeline__meta">2 · $ 5.900.000</p>
+            </div>
+            <div class="demo-pipeline__body">
+              <button type="button" class="demo-deal" data-deal="OP-04">
+                <span class="demo-deal__title">Salud Visual</span>
+                <span class="demo-deal__company">Empresa Demo Norte</span>
+                <span class="demo-deal__value">$ 4.500.000</span>
+                <span class="demo-deal__foot">Ejecutivo Demo 01 · Llamada de seguimiento</span>
+              </button>
+              <button type="button" class="demo-deal" data-deal="OP-05">
+                <span class="demo-deal__title">Salud Nutricional</span>
+                <span class="demo-deal__company">Empresa Demo Pacífico</span>
+                <span class="demo-deal__value">$ 1.400.000</span>
+                <span class="demo-deal__foot">Ejecutivo Demo 01 · Confirmar recepción de propuesta</span>
+              </button>
+              <button type="button" class="demo-pipeline__add" data-open="opportunity" aria-label="Agregar oportunidad en Propuesta enviada">
+                + Oportunidad
+              </button>
+            </div>
+          </div>
+
+          <div class="demo-pipeline__column">
+            <div class="demo-pipeline__head">
+              <p class="demo-pipeline__name">Seguimiento</p>
+              <p class="demo-pipeline__meta">1 · $ 3.200.000</p>
+            </div>
+            <div class="demo-pipeline__body">
+              <button type="button" class="demo-deal" data-deal="OP-06">
+                <span class="demo-deal__title">Salud Kinesiológica</span>
+                <span class="demo-deal__company">Empresa Demo Poniente</span>
+                <span class="demo-deal__value">$ 3.200.000</span>
+                <span class="demo-deal__foot">Ejecutivo Demo 02 · Reenviar propuesta ajustada</span>
+              </button>
+              <button type="button" class="demo-pipeline__add" data-open="opportunity" aria-label="Agregar oportunidad en Seguimiento">
+                + Oportunidad
+              </button>
+            </div>
+          </div>
+
+          <div class="demo-pipeline__column">
+            <div class="demo-pipeline__head">
+              <p class="demo-pipeline__name">Negociación</p>
+              <p class="demo-pipeline__meta">1 · $ 5.600.000</p>
+            </div>
+            <div class="demo-pipeline__body">
+              <button type="button" class="demo-deal" data-deal="OP-07">
+                <span class="demo-deal__title">Salud Visual</span>
+                <span class="demo-deal__company">Empresa Demo Cordillera</span>
+                <span class="demo-deal__value">$ 5.600.000</span>
+                <span class="demo-deal__foot">Ejecutivo Demo 02 · Revisar condiciones comerciales</span>
+              </button>
+              <button type="button" class="demo-pipeline__add" data-open="opportunity" aria-label="Agregar oportunidad en Negociación">
+                + Oportunidad
+              </button>
+            </div>
+          </div>
+
+          <div class="demo-pipeline__column demo-pipeline__column--won">
+            <div class="demo-pipeline__head">
+              <p class="demo-pipeline__name">Ganado</p>
+              <p class="demo-pipeline__meta">1 · $ 3.900.000</p>
+            </div>
+            <div class="demo-pipeline__body">
+              <button type="button" class="demo-deal demo-deal--won" data-deal="OP-08">
+                <span class="demo-deal__title">Salud Visual</span>
+                <span class="demo-deal__company">Empresa Demo Austral</span>
+                <span class="demo-deal__value">$ 3.900.000</span>
+                <span class="demo-deal__foot">Ejecutivo Demo 01 · Coordinar fechas con la empresa</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="demo-pipeline__column demo-pipeline__column--lost">
+            <div class="demo-pipeline__head">
+              <p class="demo-pipeline__name">Perdido</p>
+              <p class="demo-pipeline__meta">1 · $ 1.100.000</p>
+            </div>
+            <div class="demo-pipeline__body">
+              <button type="button" class="demo-deal demo-deal--lost" data-deal="OP-09">
+                <span class="demo-deal__title">Salud Cardiovascular</span>
+                <span class="demo-deal__company">Empresa Demo Andina</span>
+                <span class="demo-deal__value">$ 1.100.000</span>
+                <span class="demo-deal__foot">Ejecutivo Demo 02 · Sin acción pendiente</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <p class="demo-note">
+          Las tarjetas no se arrastran entre etapas: qué ocurre al mover una oportunidad
+          todavía no está definido por CSA y esta demostración no lo supone.
+        </p>
+      </article>
+
+      <article class="demo-panel is-hidden" id="crm-section-companies" data-crm-section="companies" role="tabpanel" aria-labelledby="tab-companies">
+        <p class="demo-panel__title">Empresas</p>
+        <p class="demo-panel__hint">
+          Cada empresa concentra sus contactos, sus oportunidades y sus seguimientos.
+        </p>
+
+        <div class="demo-table__wrap">
+          <table class="demo-table">
+            <thead>
+              <tr>
+                <th scope="col">Empresa</th>
+                <th scope="col">RUT</th>
+                <th scope="col">Rubro</th>
+                <th scope="col">Ejecutivo</th>
+                <th scope="col">Contactos</th>
+                <th scope="col">Oportunidades</th>
+                <th scope="col">Estado</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="demo-table__strong">Empresa Demo Norte</td>
+                <td>77.777.001-D</td>
+                <td>Minería</td>
+                <td>Ejecutivo Demo 01</td>
+                <td>1</td>
+                <td>1</td>
+                <td><span class="demo-badge">Activa</span></td>
+              </tr>
+              <tr>
+                <td class="demo-table__strong">Empresa Demo Sur</td>
+                <td>77.777.002-D</td>
+                <td>Retail</td>
+                <td>Ejecutivo Demo 02</td>
+                <td>1</td>
+                <td>1</td>
+                <td><span class="demo-badge">Activa</span></td>
+              </tr>
+              <tr>
+                <td class="demo-table__strong">Empresa Demo Centro</td>
+                <td>77.777.003-D</td>
+                <td>Servicios</td>
+                <td>Ejecutivo Demo 01</td>
+                <td>1</td>
+                <td>1</td>
+                <td><span class="demo-badge demo-badge--wait">En evaluación</span></td>
+              </tr>
+              <tr>
+                <td class="demo-table__strong">Empresa Demo Cordillera</td>
+                <td>77.777.004-D</td>
+                <td>Construcción</td>
+                <td>Ejecutivo Demo 02</td>
+                <td>1</td>
+                <td>1</td>
+                <td><span class="demo-badge">Activa</span></td>
+              </tr>
+              <tr>
+                <td class="demo-table__strong">Empresa Demo Pacífico</td>
+                <td>77.777.005-D</td>
+                <td>Transporte</td>
+                <td>Ejecutivo Demo 01</td>
+                <td>1</td>
+                <td>1</td>
+                <td><span class="demo-badge">Activa</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </article>
+
+      <article class="demo-panel is-hidden" id="crm-section-contacts" data-crm-section="contacts" role="tabpanel" aria-labelledby="tab-contacts">
+        <p class="demo-panel__title">Contactos</p>
+
+        <div class="demo-table__wrap">
+          <table class="demo-table">
+            <thead>
+              <tr>
+                <th scope="col">Nombre</th>
+                <th scope="col">Cargo</th>
+                <th scope="col">Empresa</th>
+                <th scope="col">Correo</th>
+                <th scope="col">Teléfono</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="demo-table__strong">Contacto Demo Uno</td>
+                <td>Jefatura de Personas</td>
+                <td>Empresa Demo Norte</td>
+                <td>contacto1@ejemplo.invalid</td>
+                <td>+56 9 0000 1001</td>
+              </tr>
+              <tr>
+                <td class="demo-table__strong">Contacto Demo Dos</td>
+                <td>Prevención de Riesgos</td>
+                <td>Empresa Demo Sur</td>
+                <td>contacto2@ejemplo.invalid</td>
+                <td>+56 9 0000 1002</td>
+              </tr>
+              <tr>
+                <td class="demo-table__strong">Contacto Demo Tres</td>
+                <td>Administración</td>
+                <td>Empresa Demo Centro</td>
+                <td>contacto3@ejemplo.invalid</td>
+                <td>+56 9 0000 1003</td>
+              </tr>
+              <tr>
+                <td class="demo-table__strong">Contacto Demo Cuatro</td>
+                <td>Gerencia de Operaciones</td>
+                <td>Empresa Demo Cordillera</td>
+                <td>contacto4@ejemplo.invalid</td>
+                <td>+56 9 0000 1004</td>
+              </tr>
+              <tr>
+                <td class="demo-table__strong">Contacto Demo Cinco</td>
+                <td>Jefatura de Personas</td>
+                <td>Empresa Demo Pacífico</td>
+                <td>contacto5@ejemplo.invalid</td>
+                <td>+56 9 0000 1005</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </article>
+
+      <article class="demo-panel is-hidden" id="crm-section-followups" data-crm-section="followups" role="tabpanel" aria-labelledby="tab-followups">
+        <p class="demo-panel__title">Seguimientos</p>
+
+        <div class="demo-table__wrap">
+          <table class="demo-table">
+            <thead>
+              <tr>
+                <th scope="col">Tipo</th>
+                <th scope="col">Fecha</th>
+                <th scope="col">Responsable</th>
+                <th scope="col">Descripción</th>
+                <th scope="col">Estado</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="demo-table__strong">Llamada</td>
+                <td>09-09-2026</td>
+                <td>Ejecutivo Demo 01</td>
+                <td>Confirmación de recepción de la propuesta.</td>
+                <td><span class="demo-badge">Realizada</span></td>
+              </tr>
+              <tr>
+                <td class="demo-table__strong">Email</td>
+                <td>05-09-2026</td>
+                <td>Ejecutivo Demo 01</td>
+                <td>Envío de propuesta del programa de Salud Visual.</td>
+                <td><span class="demo-badge">Realizada</span></td>
+              </tr>
+              <tr>
+                <td class="demo-table__strong">Seguimiento</td>
+                <td>12-09-2026</td>
+                <td>Ejecutivo Demo 01</td>
+                <td>Llamada de seguimiento a la propuesta enviada.</td>
+                <td><span class="demo-badge demo-badge--wait">Pendiente</span></td>
+              </tr>
+              <tr>
+                <td class="demo-table__strong">Reunión</td>
+                <td>15-09-2026</td>
+                <td>Ejecutivo Demo 02</td>
+                <td>Presentación del programa a prevención de riesgos.</td>
+                <td><span class="demo-badge demo-badge--wait">Pendiente</span></td>
+              </tr>
+              <tr>
+                <td class="demo-table__strong">Reunión</td>
+                <td>09-09-2026</td>
+                <td>Ejecutivo Demo 02</td>
+                <td>Revisión de condiciones comerciales.</td>
+                <td><span class="demo-badge">Realizada</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <p class="demo-note">
+          La relación entre empresa, programa, convenio y operativo todavía no está definida
+          por CSA y no se representa en esta demostración.
+        </p>
+      </article>
+    </section>
+      </div>
+      </main>
+    </div>
+  </div>
+
+  
+  <div id="patient-dialog" class="demo-dialog is-hidden">
+    <button type="button" class="demo-dialog__backdrop" aria-label="Cerrar" data-close="patient"></button>
+    <div class="demo-dialog__panel" role="dialog" aria-modal="true" aria-label="Nuevo paciente">
+      <header class="demo-dialog__header">
+        <div>
+          <p class="demo-dialog__title">Nuevo paciente</p>
+          <p class="demo-dialog__hint">Campos definidos por el Documento Maestro para la creación de un paciente.</p>
+        </div>
+        <button type="button" class="demo-dialog__close" data-close="patient">Cerrar</button>
+      </header>
+      <div class="demo-dialog__body">
+        <form id="patient-form" action="#" method="dialog">
+      <div class="demo-form">
+        <div class="demo-form__section">
+          <p class="demo-form__section-title">Datos personales</p>
+
+          <div class="demo-form__grid">
+            <label class="demo-field">
+              <span class="demo-field__label">RUT</span>
+              <input class="demo-field__control" type="text" autocomplete="off" />
+            </label>
+            <label class="demo-field">
+              <span class="demo-field__label">Nombres</span>
+              <input class="demo-field__control" type="text" autocomplete="off" />
+            </label>
+            <label class="demo-field">
+              <span class="demo-field__label">Apellido paterno</span>
+              <input class="demo-field__control" type="text" autocomplete="off" />
+            </label>
+            <label class="demo-field">
+              <span class="demo-field__label">Apellido materno</span>
+              <input class="demo-field__control" type="text" autocomplete="off" />
+            </label>
+            <label class="demo-field">
+              <span class="demo-field__label">Fecha de nacimiento</span>
+              <input class="demo-field__control" type="text" autocomplete="off" />
+            </label>
+            <div class="demo-field">
+              <span class="demo-field__label">Edad</span>
+              <p class="demo-field__auto">Se calcula automáticamente</p>
+            </div>
+            <label class="demo-field">
+              <span class="demo-field__label">Sexo o género</span>
+              <input class="demo-field__control" type="text" autocomplete="off" />
+            </label>
+            <label class="demo-field">
+              <span class="demo-field__label">Teléfono</span>
+              <input class="demo-field__control" type="text" autocomplete="off" />
+            </label>
+            <label class="demo-field">
+              <span class="demo-field__label">Correo electrónico</span>
+              <input class="demo-field__control" type="text" autocomplete="off" />
+            </label>
+            <label class="demo-field">
+              <span class="demo-field__label">Dirección</span>
+              <input class="demo-field__control" type="text" autocomplete="off" />
+            </label>
+            <label class="demo-field">
+              <span class="demo-field__label">Comuna</span>
+              <input class="demo-field__control" type="text" autocomplete="off" />
+            </label>
+            <label class="demo-field">
+              <span class="demo-field__label">Región</span>
+              <input class="demo-field__control" type="text" autocomplete="off" />
+            </label>
+          </div>
+        </div>
+
+        <div class="demo-form__section">
+          <p class="demo-form__section-title">Información administrativa</p>
+
+          <div class="demo-form__grid">
+            <label class="demo-field">
+              <span class="demo-field__label">Empresa o convenio</span>
+              <input class="demo-field__control" type="text" autocomplete="off" />
+            </label>
+            <label class="demo-field">
+              <span class="demo-field__label">Previsión</span>
+              <input class="demo-field__control" type="text" autocomplete="off" />
+            </label>
+            <label class="demo-field">
+              <span class="demo-field__label">Seguro complementario</span>
+              <input class="demo-field__control" type="text" autocomplete="off" />
+            </label>
+            <label class="demo-field demo-field--wide">
+              <span class="demo-field__label">Observaciones administrativas</span>
+              <textarea class="demo-field__control"></textarea>
+            </label>
+          </div>
+        </div>
+
+        <div class="demo-form__section">
+          <p class="demo-form__section-title">Regla anti-duplicados</p>
+
+          
+            <button
+              type="button"
+              class="demo-button demo-button--ghost"
+              data-duplicate="1"
+            >
+              Ver ejemplo de RUT ya registrado
+            </button>
+          <div id="duplicate-notice" class="is-hidden">
+            <p class="demo-notice">
+              <span>
+                Este paciente ya se encuentra registrado. En el sistema real se abriría el
+                registro existente según los permisos del usuario.
+              </span>
+            </p>
+          </div>
+
+          <p class="demo-panel__hint">
+            La verificación real del RUT la resuelve el backend. Aquí solo se muestra cómo
+            se vería el aviso.
+          </p>
+        </div>
+      </div>
+    </form>
+      </div>
+      <footer class="demo-dialog__footer">
+        <p class="demo-dialog__warning">Interacción de demostración. No se guarda ninguna información.</p>
+        <div class="demo-dialog__buttons">
+          <button type="button" class="demo-dialog__button" data-close="patient">Cancelar</button>
+          <button type="button" class="demo-dialog__button demo-dialog__button--primary" data-confirm="patient">Guardar</button>
+        </div>
+      </footer>
+    </div>
+  </div>
+
+  <div id="encounter-dialog" class="demo-dialog is-hidden">
+    <button type="button" class="demo-dialog__backdrop" aria-label="Cerrar" data-close="encounter"></button>
+    <div class="demo-dialog__panel" role="dialog" aria-modal="true" aria-label="Nueva atención">
+      <header class="demo-dialog__header">
+        <div>
+          <p class="demo-dialog__title">Nueva atención</p>
+          <p class="demo-dialog__hint">Campos definidos por el Documento Maestro para la atención clínica.</p>
+        </div>
+        <button type="button" class="demo-dialog__close" data-close="encounter">Cerrar</button>
+      </header>
+      <div class="demo-dialog__body">
+        <form id="encounter-form" action="#" method="dialog">
+      <div class="demo-form">
+        <div class="demo-form__section">
+          <p class="demo-form__section-title">Datos automáticos</p>
+
+          <div class="demo-form__grid">
+            <div class="demo-field">
+              <span class="demo-field__label">Paciente</span>
+              <p class="demo-field__auto">Paciente Demo 01</p>
+            </div>
+            <div class="demo-field">
+              <span class="demo-field__label">RUT</span>
+              <p class="demo-field__auto">99.999.001-D</p>
+            </div>
+            <div class="demo-field">
+              <span class="demo-field__label">Edad</span>
+              <p class="demo-field__auto">42</p>
+            </div>
+            <div class="demo-field">
+              <span class="demo-field__label">Fecha</span>
+              <p class="demo-field__auto">10-09-2026</p>
+            </div>
+            <div class="demo-field">
+              <span class="demo-field__label">Hora</span>
+              <p class="demo-field__auto">09:40</p>
+            </div>
+            <div class="demo-field">
+              <span class="demo-field__label">Profesional</span>
+              <p class="demo-field__auto">Profesional Demo A</p>
+            </div>
+            <div class="demo-field">
+              <span class="demo-field__label">Programa clínico</span>
+              <p class="demo-field__auto">Salud Visual</p>
+            </div>
+          </div>
+
+          <p class="demo-panel__hint">
+            El sistema no vuelve a pedir datos que ya conoce del paciente.
+          </p>
+        </div>
+
+        <div class="demo-form__section">
+          <p class="demo-form__section-title">Datos clínicos</p>
+
+          <div class="demo-form__grid">
+            <label class="demo-field demo-field--wide">
+              <span class="demo-field__label">Motivo de consulta</span>
+              <input class="demo-field__control" type="text" autocomplete="off" />
+            </label>
+            <label class="demo-field demo-field--wide">
+              <span class="demo-field__label">Anamnesis</span>
+              <textarea class="demo-field__control"></textarea>
+            </label>
+            <label class="demo-field demo-field--wide">
+              <span class="demo-field__label">Antecedentes relevantes</span>
+              <textarea class="demo-field__control"></textarea>
+            </label>
+            <label class="demo-field demo-field--wide">
+              <span class="demo-field__label">Evaluación</span>
+              <textarea class="demo-field__control"></textarea>
+            </label>
+            <label class="demo-field demo-field--wide">
+              <span class="demo-field__label">Resultados</span>
+              <textarea class="demo-field__control"></textarea>
+            </label>
+            <label class="demo-field demo-field--wide">
+              <span class="demo-field__label">Impresión o diagnóstico</span>
+              <input class="demo-field__control" type="text" autocomplete="off" />
+            </label>
+            <label class="demo-field demo-field--wide">
+              <span class="demo-field__label">Indicaciones</span>
+              <textarea class="demo-field__control"></textarea>
+            </label>
+            <label class="demo-field">
+              <span class="demo-field__label">Derivación</span>
+              <input class="demo-field__control" type="text" autocomplete="off" />
+            </label>
+            <label class="demo-field demo-field--wide">
+              <span class="demo-field__label">Observaciones finales</span>
+              <textarea class="demo-field__control"></textarea>
+            </label>
+          </div>
+
+          <p class="demo-panel__hint">
+            Los campos se muestran vacíos a propósito: esta demostración no propone
+            contenido clínico.
+          </p>
+        </div>
+      </div>
+    </form>
+      </div>
+      <footer class="demo-dialog__footer">
+        <p class="demo-dialog__warning">Interacción de demostración. No se guarda ninguna información.</p>
+        <div class="demo-dialog__buttons">
+          <button type="button" class="demo-dialog__button" data-close="encounter">Cancelar</button>
+          <button type="button" class="demo-dialog__button demo-dialog__button--primary" data-confirm="encounter">Guardar</button>
+        </div>
+      </footer>
+    </div>
+  </div>
+
+  <div id="document-dialog" class="demo-dialog is-hidden">
+    <button type="button" class="demo-dialog__backdrop" aria-label="Cerrar" data-close="document"></button>
+    <div class="demo-dialog__panel" role="dialog" aria-modal="true" aria-label="Adjuntar documento">
+      <header class="demo-dialog__header">
+        <div>
+          <p class="demo-dialog__title">Adjuntar documento</p>
+          <p class="demo-dialog__hint">Categorías y formatos definidos por el Documento Maestro.</p>
+        </div>
+        <button type="button" class="demo-dialog__close" data-close="document">Cerrar</button>
+      </header>
+      <div class="demo-dialog__body">
+        <form id="document-form" action="#" method="dialog">
+      <div class="demo-form">
+        <div class="demo-form__section">
+          <div class="demo-form__grid">
+            <div class="demo-field">
+              <span class="demo-field__label">Paciente</span>
+              <p class="demo-field__auto">Paciente Demo 01</p>
+            </div>
+            <label class="demo-field">
+              <span class="demo-field__label">Categoría</span>
+              <select class="demo-field__control">
+                <option>Autorrefractometría</option>
+                <option>Lensometría</option>
+                <option>Receta de lentes</option>
+                <option>Retinografía</option>
+                <option>Borrador de certificado de atención</option>
+                <option>Borrador de certificado de derivación</option>
+                <option>Receta de lágrimas artificiales</option>
+                <option>Consentimientos</option>
+              </select>
+            </label>
+            <div class="demo-field demo-field--wide">
+              <span class="demo-field__label">Archivo</span>
+              <p class="demo-field__auto">
+                Formatos admitidos: JPG, JPEG, PNG y PDF. La selección de archivos no está
+                habilitada en esta demostración.
+              </p>
+            </div>
+          </div>
+
+          <p class="demo-panel__hint">
+            No se piden metadatos adicionales por archivo. La carga tampoco es obligatoria
+            para continuar o finalizar una atención clínica.
+          </p>
+        </div>
+      </div>
+    </form>
+      </div>
+      <footer class="demo-dialog__footer">
+        <p class="demo-dialog__warning">Interacción de demostración. No se guarda ninguna información.</p>
+        <div class="demo-dialog__buttons">
+          <button type="button" class="demo-dialog__button" data-close="document">Cancelar</button>
+          <button type="button" class="demo-dialog__button demo-dialog__button--primary" data-confirm="document">Adjuntar</button>
+        </div>
+      </footer>
+    </div>
+  </div>
+
+  <div id="quote-dialog" class="demo-dialog is-hidden">
+    <button type="button" class="demo-dialog__backdrop" aria-label="Cerrar" data-close="quote"></button>
+    <div class="demo-dialog__panel" role="dialog" aria-modal="true" aria-label="Nueva cotización">
+      <header class="demo-dialog__header">
+        <div>
+          <p class="demo-dialog__title">Nueva cotización</p>
+          <p class="demo-dialog__hint">Campos definidos por el Documento Maestro para la cotización óptica.</p>
+        </div>
+        <button type="button" class="demo-dialog__close" data-close="quote">Cerrar</button>
+      </header>
+      <div class="demo-dialog__body">
+        <form id="quote-form" action="#" method="dialog">
+      <div class="demo-form">
+        <div class="demo-form__section">
+          <p class="demo-form__section-title">Información automática</p>
+
+          <div class="demo-form__grid">
+            <div class="demo-field">
+              <span class="demo-field__label">Paciente</span>
+              <p class="demo-field__auto">Paciente Demo 01</p>
+            </div>
+            <div class="demo-field">
+              <span class="demo-field__label">RUT</span>
+              <p class="demo-field__auto">99.999.001-D</p>
+            </div>
+            <div class="demo-field demo-field--wide">
+              <span class="demo-field__label">Receta</span>
+              <p class="demo-field__auto">
+                RD-2026-014 · emitida el 08-09-2026 por Profesional Demo A
+              </p>
+            </div>
+          </div>
+
+          <p class="demo-panel__hint">
+            La receta llega desde Clínica. Óptica no vuelve a transcribir sus valores.
+          </p>
+        </div>
+
+        <div class="demo-form__section">
+          <p class="demo-form__section-title">Productos</p>
+
+          <div class="demo-form__grid">
+            <label class="demo-field">
+              <span class="demo-field__label">Tipo de lente</span>
+              <select class="demo-field__control">
+                <option>Lejos</option>
+                <option>Cerca</option>
+                <option>Multifocal</option>
+                <option>Bifocal</option>
+                <option>Ocupacional</option>
+                <option>Otro</option>
+              </select>
+            </label>
+            <label class="demo-field">
+              <span class="demo-field__label">Armazón (SKU)</span>
+              <input class="demo-field__control" type="text" autocomplete="off" />
+            </label>
+            <label class="demo-field demo-field--wide">
+              <span class="demo-field__label">Cristales y tratamiento (SKU)</span>
+              <input class="demo-field__control" type="text" autocomplete="off" />
+            </label>
+          </div>
+
+          <p class="demo-panel__hint">
+            El cristal y su tratamiento se manejan como un único producto comercial con su
+            SKU correspondiente.
+          </p>
+        </div>
+
+        <div class="demo-form__section">
+          <p class="demo-form__section-title">Valores</p>
+
+          <div class="demo-form__grid">
+            <label class="demo-field">
+              <span class="demo-field__label">Armazón</span>
+              <input class="demo-field__control" type="text" autocomplete="off" />
+            </label>
+            <label class="demo-field">
+              <span class="demo-field__label">Cristales y tratamiento</span>
+              <input class="demo-field__control" type="text" autocomplete="off" />
+            </label>
+            <label class="demo-field">
+              <span class="demo-field__label">Otros</span>
+              <input class="demo-field__control" type="text" autocomplete="off" />
+            </label>
+            <label class="demo-field">
+              <span class="demo-field__label">Descuento (porcentaje o monto)</span>
+              <input class="demo-field__control" type="text" autocomplete="off" />
+            </label>
+            <label class="demo-field demo-field--wide">
+              <span class="demo-field__label">Motivo del descuento</span>
+              <input class="demo-field__control" type="text" autocomplete="off" />
+            </label>
+            <div class="demo-field">
+              <span class="demo-field__label">Total</span>
+              <p class="demo-field__auto">Se calcula al completar los valores</p>
+            </div>
+          </div>
+
+          <p class="demo-panel__hint">
+            El descuento aplicado, su motivo y el usuario que lo aplica deben quedar
+            registrados. Aquí no se realiza ningún cálculo.
+          </p>
+        </div>
+      </div>
+    </form>
+      </div>
+      <footer class="demo-dialog__footer">
+        <p class="demo-dialog__warning">Interacción de demostración. No se guarda ninguna información.</p>
+        <div class="demo-dialog__buttons">
+          <button type="button" class="demo-dialog__button" data-close="quote">Cancelar</button>
+          <button type="button" class="demo-dialog__button demo-dialog__button--primary" data-confirm="quote">Guardar</button>
+        </div>
+      </footer>
+    </div>
+  </div>
+
+  <div id="product-dialog" class="demo-dialog is-hidden">
+    <button type="button" class="demo-dialog__backdrop" aria-label="Cerrar" data-close="product"></button>
+    <div class="demo-dialog__panel" role="dialog" aria-modal="true" aria-label="Nuevo producto">
+      <header class="demo-dialog__header">
+        <div>
+          <p class="demo-dialog__title">Nuevo producto</p>
+          <p class="demo-dialog__hint">Campos definidos por el Documento Maestro para el catálogo.</p>
+        </div>
+        <button type="button" class="demo-dialog__close" data-close="product">Cerrar</button>
+      </header>
+      <div class="demo-dialog__body">
+        <form id="product-form" action="#" method="dialog">
+      <div class="demo-form">
+        <div class="demo-form__section">
+          <p class="demo-form__section-title">Armazones</p>
+
+          <div class="demo-form__grid">
+            <label class="demo-field">
+              <span class="demo-field__label">SKU</span>
+              <input class="demo-field__control" type="text" autocomplete="off" />
+            </label>
+            <label class="demo-field">
+              <span class="demo-field__label">Código interno</span>
+              <input class="demo-field__control" type="text" autocomplete="off" />
+            </label>
+            <label class="demo-field">
+              <span class="demo-field__label">Código de barras</span>
+              <input class="demo-field__control" type="text" autocomplete="off" />
+            </label>
+            <label class="demo-field">
+              <span class="demo-field__label">Marca</span>
+              <input class="demo-field__control" type="text" autocomplete="off" />
+            </label>
+            <label class="demo-field">
+              <span class="demo-field__label">Modelo</span>
+              <input class="demo-field__control" type="text" autocomplete="off" />
+            </label>
+            <label class="demo-field">
+              <span class="demo-field__label">Color</span>
+              <input class="demo-field__control" type="text" autocomplete="off" />
+            </label>
+            <label class="demo-field">
+              <span class="demo-field__label">Talla</span>
+              <input class="demo-field__control" type="text" autocomplete="off" />
+            </label>
+            <label class="demo-field">
+              <span class="demo-field__label">Proveedor</span>
+              <input class="demo-field__control" type="text" autocomplete="off" />
+            </label>
+            <label class="demo-field">
+              <span class="demo-field__label">Costo</span>
+              <input class="demo-field__control" type="text" autocomplete="off" />
+            </label>
+            <label class="demo-field">
+              <span class="demo-field__label">Precio</span>
+              <input class="demo-field__control" type="text" autocomplete="off" />
+            </label>
+            <label class="demo-field">
+              <span class="demo-field__label">Estado</span>
+              <input class="demo-field__control" type="text" autocomplete="off" />
+            </label>
+          </div>
+        </div>
+
+        <div class="demo-form__section">
+          <p class="demo-form__section-title">Cristales y tratamientos</p>
+
+          <div class="demo-form__grid">
+            <label class="demo-field">
+              <span class="demo-field__label">SKU</span>
+              <input class="demo-field__control" type="text" autocomplete="off" />
+            </label>
+            <label class="demo-field">
+              <span class="demo-field__label">Tipo de cristal</span>
+              <input class="demo-field__control" type="text" autocomplete="off" />
+            </label>
+            <label class="demo-field">
+              <span class="demo-field__label">Diseño</span>
+              <input class="demo-field__control" type="text" autocomplete="off" />
+            </label>
+            <label class="demo-field">
+              <span class="demo-field__label">Material</span>
+              <input class="demo-field__control" type="text" autocomplete="off" />
+            </label>
+            <label class="demo-field">
+              <span class="demo-field__label">Índice</span>
+              <input class="demo-field__control" type="text" autocomplete="off" />
+            </label>
+            <label class="demo-field">
+              <span class="demo-field__label">Tratamiento incluido</span>
+              <input class="demo-field__control" type="text" autocomplete="off" />
+            </label>
+            <label class="demo-field">
+              <span class="demo-field__label">Laboratorio o proveedor</span>
+              <input class="demo-field__control" type="text" autocomplete="off" />
+            </label>
+            <label class="demo-field">
+              <span class="demo-field__label">Costo</span>
+              <input class="demo-field__control" type="text" autocomplete="off" />
+            </label>
+            <label class="demo-field">
+              <span class="demo-field__label">Precio</span>
+              <input class="demo-field__control" type="text" autocomplete="off" />
+            </label>
+          </div>
+
+          <p class="demo-panel__hint">
+            El cristal y su tratamiento forman un único producto comercial con un SKU
+            propio, no dos productos separados.
+          </p>
+        </div>
+      </div>
+    </form>
+      </div>
+      <footer class="demo-dialog__footer">
+        <p class="demo-dialog__warning">Interacción de demostración. No se guarda ninguna información.</p>
+        <div class="demo-dialog__buttons">
+          <button type="button" class="demo-dialog__button" data-close="product">Cancelar</button>
+          <button type="button" class="demo-dialog__button demo-dialog__button--primary" data-confirm="product">Guardar</button>
+        </div>
+      </footer>
+    </div>
+  </div>
+
+  <div id="movement-dialog" class="demo-dialog is-hidden">
+    <button type="button" class="demo-dialog__backdrop" aria-label="Cerrar" data-close="movement"></button>
+    <div class="demo-dialog__panel" role="dialog" aria-modal="true" aria-label="Registrar movimiento">
+      <header class="demo-dialog__header">
+        <div>
+          <p class="demo-dialog__title">Registrar movimiento</p>
+          <p class="demo-dialog__hint">Campos definidos por el Documento Maestro para el inventario.</p>
+        </div>
+        <button type="button" class="demo-dialog__close" data-close="movement">Cerrar</button>
+      </header>
+      <div class="demo-dialog__body">
+        <form id="movement-form" action="#" method="dialog">
+      <div class="demo-form">
+        <div class="demo-form__section">
+          <div class="demo-form__grid">
+            <label class="demo-field">
+              <span class="demo-field__label">Tipo de movimiento</span>
+              <select class="demo-field__control">
+                <option>Entrada</option>
+                <option>Salida</option>
+                <option>Ajuste</option>
+              </select>
+            </label>
+            <label class="demo-field">
+              <span class="demo-field__label">SKU</span>
+              <input class="demo-field__control" type="text" autocomplete="off" />
+            </label>
+            <label class="demo-field">
+              <span class="demo-field__label">Cantidad</span>
+              <input class="demo-field__control" type="text" autocomplete="off" />
+            </label>
+            <label class="demo-field">
+              <span class="demo-field__label">Fecha</span>
+              <input class="demo-field__control" type="text" autocomplete="off" />
+            </label>
+            <div class="demo-field">
+              <span class="demo-field__label">Usuario</span>
+              <p class="demo-field__auto">Usuario Demo Inventario</p>
+            </div>
+            <label class="demo-field demo-field--wide">
+              <span class="demo-field__label">Motivo</span>
+              <input class="demo-field__control" type="text" autocomplete="off" />
+            </label>
+          </div>
+
+          <p class="demo-panel__hint">
+            En qué momento exacto una venta descuenta stock todavía no está definido por
+            CSA y esta demostración no lo supone.
+          </p>
+        </div>
+      </div>
+    </form>
+      </div>
+      <footer class="demo-dialog__footer">
+        <p class="demo-dialog__warning">Interacción de demostración. No se guarda ninguna información.</p>
+        <div class="demo-dialog__buttons">
+          <button type="button" class="demo-dialog__button" data-close="movement">Cancelar</button>
+          <button type="button" class="demo-dialog__button demo-dialog__button--primary" data-confirm="movement">Guardar</button>
+        </div>
+      </footer>
+    </div>
+  </div>
+
+  <div id="payment-dialog" class="demo-dialog is-hidden">
+    <button type="button" class="demo-dialog__backdrop" aria-label="Cerrar" data-close="payment"></button>
+    <div class="demo-dialog__panel" role="dialog" aria-modal="true" aria-label="Registrar pago">
+      <header class="demo-dialog__header">
+        <div>
+          <p class="demo-dialog__title">Registrar pago</p>
+          <p class="demo-dialog__hint">Formas de pago definidas por el Documento Maestro.</p>
+        </div>
+        <button type="button" class="demo-dialog__close" data-close="payment">Cerrar</button>
+      </header>
+      <div class="demo-dialog__body">
+        <form id="payment-form" action="#" method="dialog">
+      <div class="demo-form">
+        <div class="demo-form__section">
+          <div class="demo-form__grid">
+            <label class="demo-field">
+              <span class="demo-field__label">Forma de pago</span>
+              <select class="demo-field__control">
+                <option>Efectivo</option>
+                <option>Transferencia</option>
+                <option>Débito</option>
+                <option>Crédito</option>
+                <option>Crédito Directo</option>
+                <option>Caja Los Andes</option>
+                <option>Descuento por planilla</option>
+                <option>Orden de compra</option>
+                <option>Otro</option>
+              </select>
+            </label>
+            <label class="demo-field">
+              <span class="demo-field__label">Monto</span>
+              <input class="demo-field__control" type="text" autocomplete="off" />
+            </label>
+            <label class="demo-field">
+              <span class="demo-field__label">Fecha</span>
+              <input class="demo-field__control" type="text" autocomplete="off" />
+            </label>
+            <label class="demo-field demo-field--wide">
+              <span class="demo-field__label">Observaciones</span>
+              <input class="demo-field__control" type="text" autocomplete="off" />
+            </label>
+          </div>
+
+          <p class="demo-panel__hint">
+            El sistema debe permitir pago mixto y diferenciar total de la venta, total
+            pagado y saldo pendiente. Aquí no se realiza ningún cálculo.
+          </p>
+        </div>
+      </div>
+    </form>
+      </div>
+      <footer class="demo-dialog__footer">
+        <p class="demo-dialog__warning">Interacción de demostración. No se guarda ninguna información.</p>
+        <div class="demo-dialog__buttons">
+          <button type="button" class="demo-dialog__button" data-close="payment">Cancelar</button>
+          <button type="button" class="demo-dialog__button demo-dialog__button--primary" data-confirm="payment">Guardar</button>
+        </div>
+      </footer>
+    </div>
+  </div>
+
+  <div id="user-dialog" class="demo-dialog is-hidden">
+    <button type="button" class="demo-dialog__backdrop" aria-label="Cerrar" data-close="user"></button>
+    <div class="demo-dialog__panel" role="dialog" aria-modal="true" aria-label="Nuevo usuario">
+      <header class="demo-dialog__header">
+        <div>
+          <p class="demo-dialog__title">Nuevo usuario</p>
+          <p class="demo-dialog__hint">Campos y roles definidos por el Documento Maestro.</p>
+        </div>
+        <button type="button" class="demo-dialog__close" data-close="user">Cerrar</button>
+      </header>
+      <div class="demo-dialog__body">
+        <form id="user-form" action="#" method="dialog">
+      <div class="demo-form">
+        <div class="demo-form__section">
+          <div class="demo-form__grid">
+            <label class="demo-field">
+              <span class="demo-field__label">Nombre</span>
+              <input class="demo-field__control" type="text" autocomplete="off" />
+            </label>
+            <label class="demo-field">
+              <span class="demo-field__label">Apellido</span>
+              <input class="demo-field__control" type="text" autocomplete="off" />
+            </label>
+            <label class="demo-field">
+              <span class="demo-field__label">RUT</span>
+              <input class="demo-field__control" type="text" autocomplete="off" />
+            </label>
+            <label class="demo-field">
+              <span class="demo-field__label">Correo</span>
+              <input class="demo-field__control" type="text" autocomplete="off" />
+            </label>
+            <label class="demo-field">
+              <span class="demo-field__label">Teléfono</span>
+              <input class="demo-field__control" type="text" autocomplete="off" />
+            </label>
+            <label class="demo-field">
+              <span class="demo-field__label">Cargo</span>
+              <input class="demo-field__control" type="text" autocomplete="off" />
+            </label>
+            <label class="demo-field">
+              <span class="demo-field__label">Rol</span>
+              <select class="demo-field__control">
+                <option>Administrador</option>
+                <option>Profesional clínico</option>
+                <option>Óptica/Ventas</option>
+                <option>Comercial</option>
+                <option>Caja</option>
+                <option>Inventario</option>
+              </select>
+            </label>
+            <label class="demo-field">
+              <span class="demo-field__label">Estado</span>
+              <select class="demo-field__control">
+                <option>Activo</option>
+                <option>Inactivo</option>
+              </select>
+            </label>
+          </div>
+
+          <p class="demo-panel__hint">
+            La matriz detallada de permisos por rol la define CSA. Esta demostración no la
+            supone ni aplica ningún control de acceso.
+          </p>
+        </div>
+      </div>
+    </form>
+      </div>
+      <footer class="demo-dialog__footer">
+        <p class="demo-dialog__warning">Interacción de demostración. No se guarda ninguna información.</p>
+        <div class="demo-dialog__buttons">
+          <button type="button" class="demo-dialog__button" data-close="user">Cancelar</button>
+          <button type="button" class="demo-dialog__button demo-dialog__button--primary" data-confirm="user">Guardar</button>
+        </div>
+      </footer>
+    </div>
+  </div>
+  <div id="deal-dialog" class="demo-dialog demo-dialog--side is-hidden">
+    <button type="button" class="demo-dialog__backdrop" aria-label="Cerrar" data-close="deal"></button>
+    <div class="demo-dialog__panel" role="dialog" aria-modal="true" aria-labelledby="deal-heading">
+      <header class="demo-dialog__header">
+        <div>
+          <p class="demo-dialog__title" id="deal-heading"></p>
+          <p class="demo-dialog__hint" id="deal-hint"></p>
+        </div>
+        <button type="button" class="demo-dialog__close" data-close="deal">Cerrar</button>
+      </header>
+      <div class="demo-dialog__body">
+        <div class="demo-form">
+          <dl class="demo-facts">
+            <div>
+              <dt class="demo-facts__term">Empresa</dt>
+              <dd class="demo-facts__value" id="deal-company"></dd>
+            </div>
+            <div>
+              <dt class="demo-facts__term">Contacto</dt>
+              <dd class="demo-facts__value" id="deal-contact"></dd>
+            </div>
+            <div>
+              <dt class="demo-facts__term">Ejecutivo</dt>
+              <dd class="demo-facts__value" id="deal-executive"></dd>
+            </div>
+            <div>
+              <dt class="demo-facts__term">Programa</dt>
+              <dd class="demo-facts__value" id="deal-program"></dd>
+            </div>
+            <div>
+              <dt class="demo-facts__term">Valor estimado</dt>
+              <dd class="demo-facts__value" id="deal-value"></dd>
+            </div>
+            <div>
+              <dt class="demo-facts__term">Probabilidad</dt>
+              <dd class="demo-facts__value" id="deal-probability"></dd>
+            </div>
+            <div>
+              <dt class="demo-facts__term">Etapa</dt>
+              <dd class="demo-facts__value" id="deal-stage"></dd>
+            </div>
+            <div>
+              <dt class="demo-facts__term">Último contacto</dt>
+              <dd class="demo-facts__value" id="deal-last-contact"></dd>
+            </div>
+            <div>
+              <dt class="demo-facts__term">Próxima acción</dt>
+              <dd class="demo-facts__value" id="deal-next-action"></dd>
+            </div>
+          </dl>
+          <div class="demo-form__section">
+            <p class="demo-form__section-title">Notas</p>
+            <p class="demo-panel__hint" id="deal-notes"></p>
+          </div>
+          <div class="demo-form__section">
+            <p class="demo-form__section-title">Seguimientos</p>
+            <div id="deal-followups"></div>
+          </div>
+        </div>
+      </div>
+      <footer class="demo-dialog__footer">
+        <p class="demo-dialog__warning">
+          Información de ejemplo para revisar el detalle de la oportunidad.
+        </p>
+        <div class="demo-dialog__buttons">
+          <button type="button" class="demo-dialog__button" data-close="deal">Cerrar</button>
+        </div>
+      </footer>
+    </div>
+  </div>
+
+  <div id="opportunity-dialog" class="demo-dialog is-hidden">
+    <button type="button" class="demo-dialog__backdrop" aria-label="Cerrar" data-close="opportunity"></button>
+    <div class="demo-dialog__panel" role="dialog" aria-modal="true" aria-label="Nueva oportunidad">
+      <header class="demo-dialog__header">
+        <div>
+          <p class="demo-dialog__title">Nueva oportunidad</p>
+          <p class="demo-dialog__hint">Campos definidos por el Documento Maestro para el pipeline comercial.</p>
+        </div>
+        <button type="button" class="demo-dialog__close" data-close="opportunity">Cerrar</button>
+      </header>
+      <div class="demo-dialog__body">
+        <form id="opportunity-form" class="demo-form" autocomplete="off">
+          <div class="demo-form__section">
+            <div class="demo-form__grid">
+              <label class="demo-field">
+                <span class="demo-field__label">Empresa</span>
+                <input class="demo-field__control" type="text" autocomplete="off" />
+              </label>
+              <label class="demo-field">
+                <span class="demo-field__label">Contacto</span>
+                <input class="demo-field__control" type="text" autocomplete="off" />
+              </label>
+              <label class="demo-field">
+                <span class="demo-field__label">Ejecutivo responsable</span>
+                <input class="demo-field__control" type="text" autocomplete="off" />
+              </label>
+              <label class="demo-field">
+                <span class="demo-field__label">Servicio o programa</span>
+                <input class="demo-field__control" type="text" autocomplete="off" />
+              </label>
+              <label class="demo-field">
+                <span class="demo-field__label">Valor estimado</span>
+                <input class="demo-field__control" type="text" autocomplete="off" />
+              </label>
+              <label class="demo-field">
+                <span class="demo-field__label">Probabilidad</span>
+                <input class="demo-field__control" type="text" autocomplete="off" />
+              </label>
+              <label class="demo-field">
+                <span class="demo-field__label">Etapa</span>
+                <select class="demo-field__control">
+                  <option>Prospecto</option>
+                  <option>Contactado</option>
+                  <option>Reunión agendada</option>
+                  <option>Propuesta enviada</option>
+                  <option>Seguimiento</option>
+                  <option>Negociación</option>
+                  <option>Ganado</option>
+                  <option>Perdido</option>
+                </select>
+              </label>
+              <label class="demo-field">
+                <span class="demo-field__label">Fecha estimada de cierre</span>
+                <input class="demo-field__control" type="text" autocomplete="off" />
+              </label>
+              <label class="demo-field">
+                <span class="demo-field__label">Último contacto</span>
+                <input class="demo-field__control" type="text" autocomplete="off" />
+              </label>
+              <label class="demo-field">
+                <span class="demo-field__label">Próxima acción</span>
+                <input class="demo-field__control" type="text" autocomplete="off" />
+              </label>
+              <label class="demo-field">
+                <span class="demo-field__label">Fecha próxima acción</span>
+                <input class="demo-field__control" type="text" autocomplete="off" />
+              </label>
+              <label class="demo-field demo-field--wide">
+                <span class="demo-field__label">Notas</span>
+                <textarea class="demo-field__control"></textarea>
+              </label>
+            </div>
+          </div>
+        </form>
+      </div>
+      <footer class="demo-dialog__footer">
+        <p class="demo-dialog__warning">
+          Interacción de demostración. No se guarda ninguna información.
+        </p>
+        <div class="demo-dialog__buttons">
+          <button type="button" class="demo-dialog__button" data-close="opportunity">Cancelar</button>
+          <button type="button" class="demo-dialog__button demo-dialog__button--primary" data-confirm="opportunity">Guardar</button>
+        </div>
+      </footer>
+    </div>
+  </div>
+
+  <div id="company-dialog" class="demo-dialog is-hidden">
+    <button type="button" class="demo-dialog__backdrop" aria-label="Cerrar" data-close="company"></button>
+    <div class="demo-dialog__panel" role="dialog" aria-modal="true" aria-label="Nueva empresa">
+      <header class="demo-dialog__header">
+        <div>
+          <p class="demo-dialog__title">Nueva empresa</p>
+          <p class="demo-dialog__hint">Campos definidos por el Documento Maestro para empresas del CRM.</p>
+        </div>
+        <button type="button" class="demo-dialog__close" data-close="company">Cerrar</button>
+      </header>
+      <div class="demo-dialog__body">
+        <form id="company-form" class="demo-form" autocomplete="off">
+          <div class="demo-form__section">
+            <div class="demo-form__grid">
+              <label class="demo-field">
+                <span class="demo-field__label">RUT empresa</span>
+                <input class="demo-field__control" type="text" autocomplete="off" />
+              </label>
+              <label class="demo-field">
+                <span class="demo-field__label">Razón social</span>
+                <input class="demo-field__control" type="text" autocomplete="off" />
+              </label>
+              <label class="demo-field">
+                <span class="demo-field__label">Nombre comercial</span>
+                <input class="demo-field__control" type="text" autocomplete="off" />
+              </label>
+              <label class="demo-field">
+                <span class="demo-field__label">Industria o rubro</span>
+                <input class="demo-field__control" type="text" autocomplete="off" />
+              </label>
+              <label class="demo-field">
+                <span class="demo-field__label">Dirección</span>
+                <input class="demo-field__control" type="text" autocomplete="off" />
+              </label>
+              <label class="demo-field">
+                <span class="demo-field__label">Comuna</span>
+                <input class="demo-field__control" type="text" autocomplete="off" />
+              </label>
+              <label class="demo-field">
+                <span class="demo-field__label">Región</span>
+                <input class="demo-field__control" type="text" autocomplete="off" />
+              </label>
+              <label class="demo-field">
+                <span class="demo-field__label">Sitio web</span>
+                <input class="demo-field__control" type="text" autocomplete="off" />
+              </label>
+              <label class="demo-field">
+                <span class="demo-field__label">Teléfono</span>
+                <input class="demo-field__control" type="text" autocomplete="off" />
+              </label>
+              <label class="demo-field">
+                <span class="demo-field__label">Estado</span>
+                <input class="demo-field__control" type="text" autocomplete="off" />
+              </label>
+              <label class="demo-field">
+                <span class="demo-field__label">Ejecutivo responsable</span>
+                <input class="demo-field__control" type="text" autocomplete="off" />
+              </label>
+            </div>
+          </div>
+        </form>
+      </div>
+      <footer class="demo-dialog__footer">
+        <p class="demo-dialog__warning">
+          Interacción de demostración. No se guarda ninguna información.
+        </p>
+        <div class="demo-dialog__buttons">
+          <button type="button" class="demo-dialog__button" data-close="company">Cancelar</button>
+          <button type="button" class="demo-dialog__button demo-dialog__button--primary" data-confirm="company">Guardar</button>
+        </div>
+      </footer>
+    </div>
+  </div>
+
+  <div id="followUp-dialog" class="demo-dialog is-hidden">
+    <button type="button" class="demo-dialog__backdrop" aria-label="Cerrar" data-close="followUp"></button>
+    <div class="demo-dialog__panel" role="dialog" aria-modal="true" aria-label="Nuevo seguimiento">
+      <header class="demo-dialog__header">
+        <div>
+          <p class="demo-dialog__title">Nuevo seguimiento</p>
+          <p class="demo-dialog__hint">Campos definidos por el Documento Maestro para las tareas del CRM.</p>
+        </div>
+        <button type="button" class="demo-dialog__close" data-close="followUp">Cerrar</button>
+      </header>
+      <div class="demo-dialog__body">
+        <form id="followUp-form" class="demo-form" autocomplete="off">
+          <div class="demo-form__section">
+            <div class="demo-form__grid">
+              <label class="demo-field">
+                <span class="demo-field__label">Tipo</span>
+                <select class="demo-field__control">
+                  <option>Llamada</option>
+                  <option>Email</option>
+                  <option>WhatsApp</option>
+                  <option>Reunión</option>
+                  <option>Seguimiento</option>
+                  <option>Otra tarea</option>
+                </select>
+              </label>
+              <label class="demo-field">
+                <span class="demo-field__label">Responsable</span>
+                <input class="demo-field__control" type="text" autocomplete="off" />
+              </label>
+              <label class="demo-field">
+                <span class="demo-field__label">Fecha</span>
+                <input class="demo-field__control" type="text" autocomplete="off" />
+              </label>
+              <label class="demo-field">
+                <span class="demo-field__label">Hora</span>
+                <input class="demo-field__control" type="text" autocomplete="off" />
+              </label>
+              <label class="demo-field">
+                <span class="demo-field__label">Prioridad</span>
+                <input class="demo-field__control" type="text" autocomplete="off" />
+              </label>
+              <label class="demo-field">
+                <span class="demo-field__label">Cliente</span>
+                <input class="demo-field__control" type="text" autocomplete="off" />
+              </label>
+              <label class="demo-field">
+                <span class="demo-field__label">Oportunidad</span>
+                <input class="demo-field__control" type="text" autocomplete="off" />
+              </label>
+              <label class="demo-field">
+                <span class="demo-field__label">Estado</span>
+                <input class="demo-field__control" type="text" autocomplete="off" />
+              </label>
+              <label class="demo-field demo-field--wide">
+                <span class="demo-field__label">Descripción</span>
+                <textarea class="demo-field__control"></textarea>
+              </label>
+            </div>
+          </div>
+        </form>
+      </div>
+      <footer class="demo-dialog__footer">
+        <p class="demo-dialog__warning">
+          Interacción de demostración. No se guarda ninguna información.
+        </p>
+        <div class="demo-dialog__buttons">
+          <button type="button" class="demo-dialog__button" data-close="followUp">Cancelar</button>
+          <button type="button" class="demo-dialog__button demo-dialog__button--primary" data-confirm="followUp">Guardar</button>
+        </div>
+      </footer>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      var opportunities = {
+        "OP-01": {
+          company: "Empresa Demo Oriente",
+          contact: "Contacto Demo Uno",
+          executive: "Ejecutivo Demo 01",
+          program: "Salud Visual",
+          value: "$ 2.100.000",
+          probability: "20 %",
+          stage: "Prospecto",
+          nextAction: "Primer contacto telefónico",
+          nextActionDate: "14-09-2026",
+          lastContact: "Sin contacto registrado",
+          notes: "Empresa referida en una feria de prevención."
+        },
+        "OP-02": {
+          company: "Empresa Demo Centro",
+          contact: "Contacto Demo Tres",
+          executive: "Ejecutivo Demo 01",
+          program: "Salud Visual",
+          value: "$ 1.950.000",
+          probability: "30 %",
+          stage: "Contactado",
+          nextAction: "Enviar información de programas",
+          nextActionDate: "11-09-2026",
+          lastContact: "05-09-2026",
+          notes: "Solicitan detalle de cobertura por trabajador."
+        },
+        "OP-03": {
+          company: "Empresa Demo Sur",
+          contact: "Contacto Demo Dos",
+          executive: "Ejecutivo Demo 02",
+          program: "Salud Cardiovascular",
+          value: "$ 2.800.000",
+          probability: "45 %",
+          stage: "Reunión agendada",
+          nextAction: "Reunión de presentación",
+          nextActionDate: "15-09-2026",
+          lastContact: "08-09-2026",
+          notes: "Reunión con prevención de riesgos y personas."
+        },
+        "OP-04": {
+          company: "Empresa Demo Norte",
+          contact: "Contacto Demo Uno",
+          executive: "Ejecutivo Demo 01",
+          program: "Salud Visual",
+          value: "$ 4.500.000",
+          probability: "60 %",
+          stage: "Propuesta enviada",
+          nextAction: "Llamada de seguimiento",
+          nextActionDate: "12-09-2026",
+          lastContact: "09-09-2026",
+          notes: "Propuesta enviada para operativo en faena."
+        },
+        "OP-05": {
+          company: "Empresa Demo Pacífico",
+          contact: "Contacto Demo Cinco",
+          executive: "Ejecutivo Demo 01",
+          program: "Salud Nutricional",
+          value: "$ 1.400.000",
+          probability: "55 %",
+          stage: "Propuesta enviada",
+          nextAction: "Confirmar recepción de propuesta",
+          nextActionDate: "16-09-2026",
+          lastContact: "04-09-2026",
+          notes: "Piden alternativa por jornada completa."
+        },
+        "OP-06": {
+          company: "Empresa Demo Poniente",
+          contact: "Contacto Demo Dos",
+          executive: "Ejecutivo Demo 02",
+          program: "Salud Kinesiológica",
+          value: "$ 3.200.000",
+          probability: "50 %",
+          stage: "Seguimiento",
+          nextAction: "Reenviar propuesta ajustada",
+          nextActionDate: "18-09-2026",
+          lastContact: "01-09-2026",
+          notes: "Sin respuesta desde el último envío."
+        },
+        "OP-07": {
+          company: "Empresa Demo Cordillera",
+          contact: "Contacto Demo Cuatro",
+          executive: "Ejecutivo Demo 02",
+          program: "Salud Visual",
+          value: "$ 5.600.000",
+          probability: "75 %",
+          stage: "Negociación",
+          nextAction: "Revisar condiciones comerciales",
+          nextActionDate: "13-09-2026",
+          lastContact: "09-09-2026",
+          notes: "Negocian valor por trabajador atendido."
+        },
+        "OP-08": {
+          company: "Empresa Demo Austral",
+          contact: "Contacto Demo Cinco",
+          executive: "Ejecutivo Demo 01",
+          program: "Salud Visual",
+          value: "$ 3.900.000",
+          probability: "100 %",
+          stage: "Ganado",
+          nextAction: "Coordinar fechas con la empresa",
+          nextActionDate: "17-09-2026",
+          lastContact: "03-09-2026",
+          notes: "Programa aceptado para el último trimestre."
+        },
+        "OP-09": {
+          company: "Empresa Demo Andina",
+          contact: "Contacto Demo Cuatro",
+          executive: "Ejecutivo Demo 02",
+          program: "Salud Cardiovascular",
+          value: "$ 1.100.000",
+          probability: "0 %",
+          stage: "Perdido",
+          nextAction: "Sin acción pendiente",
+          nextActionDate: "No aplica",
+          lastContact: "20-08-2026",
+          notes: "Postergan el programa para el próximo año."
+        }
+      };
+
+      var followUps = [
+        { opportunityId: "OP-04", type: "Llamada", date: "09-09-2026", description: "Confirmación de recepción de la propuesta.", state: "Realizada" },
+        { opportunityId: "OP-04", type: "Email", date: "05-09-2026", description: "Envío de propuesta del programa de Salud Visual.", state: "Realizada" },
+        { opportunityId: "OP-04", type: "Seguimiento", date: "12-09-2026", description: "Llamada de seguimiento a la propuesta enviada.", state: "Pendiente" },
+        { opportunityId: "OP-03", type: "Reunión", date: "15-09-2026", description: "Presentación del programa a prevención de riesgos.", state: "Pendiente" },
+        { opportunityId: "OP-07", type: "Reunión", date: "09-09-2026", description: "Revisión de condiciones comerciales.", state: "Realizada" }
+      ];
+
+      var confirmMessages = {
+        opportunity: "Ejemplo de oportunidad mostrado solo en pantalla. La demostración no guarda información.",
+        company: "Ejemplo de empresa mostrado solo en pantalla. La demostración no guarda información.",
+        followUp: "Ejemplo de seguimiento mostrado solo en pantalla. La demostración no guarda información."
+      };
+
+      var dialogs = {
+        deal: document.getElementById("deal-dialog"),
+        opportunity: document.getElementById("opportunity-dialog"),
+        company: document.getElementById("company-dialog"),
+        followUp: document.getElementById("followUp-dialog")
+      };
+
+      var notice = document.getElementById("demo-notice");
+      var noticeText = document.getElementById("demo-notice-text");
+
+      function setText(id, value) {
+        document.getElementById(id).textContent = value;
+      }
+
+      function hideNotice() {
+        notice.classList.add("is-hidden");
+        noticeText.textContent = "";
+      }
+
+      function showNotice(message) {
+        noticeText.textContent = message;
+        notice.classList.remove("is-hidden");
+      }
+
+      function resetForm(name) {
+        var form = document.getElementById(name + "-form");
+        if (form) {
+          form.reset();
+        }
+      }
+
+      function closeDialog(name) {
+        dialogs[name].classList.add("is-hidden");
+        if (name !== "deal") {
+          resetForm(name);
+        }
+      }
+
+      function closeTopDialog() {
+        var order = ["opportunity", "company", "followUp", "deal"];
+        var i;
+        for (i = 0; i < order.length; i += 1) {
+          if (!dialogs[order[i]].classList.contains("is-hidden")) {
+            closeDialog(order[i]);
+            return;
+          }
+        }
+      }
+
+      function openCreation(name) {
+        hideNotice();
+        resetForm(name);
+        dialogs[name].classList.remove("is-hidden");
+      }
+
+      function openDeal(id) {
+        var deal = opportunities[id];
+        var related = followUps.filter(function (item) {
+          return item.opportunityId === id;
+        });
+        var container = document.getElementById("deal-followups");
+        var html = "";
+        var i;
+
+        if (!deal) {
+          return;
+        }
+
+        hideNotice();
+        setText("deal-heading", deal.program);
+        setText("deal-hint", deal.company + " · " + deal.stage);
+        setText("deal-company", deal.company);
+        setText("deal-contact", deal.contact);
+        setText("deal-executive", deal.executive);
+        setText("deal-program", deal.program);
+        setText("deal-value", deal.value);
+        setText("deal-probability", deal.probability);
+        setText("deal-stage", deal.stage);
+        setText("deal-last-contact", deal.lastContact);
+        setText("deal-next-action", deal.nextAction + " · " + deal.nextActionDate);
+        setText("deal-notes", deal.notes);
+
+        if (related.length === 0) {
+          html = '<p class="demo-panel__hint">Sin seguimientos registrados.</p>';
+        } else {
+          for (i = 0; i < related.length; i += 1) {
+            html +=
+              '<p class="demo-panel__hint">' +
+              related[i].date +
+              " · " +
+              related[i].type +
+              " · " +
+              related[i].state +
+              "<br />" +
+              related[i].description +
+              "</p>";
+          }
+        }
+
+        container.innerHTML = html;
+        dialogs.deal.classList.remove("is-hidden");
+      }
+
+
+      var areas = document.querySelectorAll("[data-app-area]");
+      var navLinks = document.querySelectorAll(".navigation__link[data-area]");
+      Object.assign(confirmMessages, {
+        patient: "Ejemplo de paciente mostrado solo en pantalla. La demostración no guarda información.",
+        encounter: "Ejemplo de atención mostrado solo en pantalla. La demostración no guarda información.",
+        quote: "Ejemplo de cotización mostrado solo en pantalla. La demostración no guarda información.",
+        product: "Ejemplo de producto mostrado solo en pantalla. La demostración no guarda información.",
+        movement: "Ejemplo de movimiento mostrado solo en pantalla. La demostración no guarda información.",
+        payment: "Ejemplo de pago mostrado solo en pantalla. La demostración no guarda información.",
+        user: "Ejemplo de usuario mostrado solo en pantalla. La demostración no guarda información.",
+        document: "Ejemplo de documento mostrado solo en pantalla. La demostración no guarda información."
+      });
+      ["patient","encounter","quote","product","movement","payment","user","document"].forEach(function (name) {
+        dialogs[name] = document.getElementById(name + "-dialog");
+      });
+
+      function showArea(name) {
+        var i;
+        for (i = 0; i < areas.length; i += 1) {
+          if (areas[i].getAttribute("data-app-area") === name) {
+            areas[i].classList.remove("is-hidden");
+          } else {
+            areas[i].classList.add("is-hidden");
+          }
+        }
+        for (i = 0; i < navLinks.length; i += 1) {
+          if (navLinks[i].getAttribute("data-area") === name) {
+            navLinks[i].classList.add("navigation__link--active");
+            navLinks[i].setAttribute("aria-current", "page");
+          } else {
+            navLinks[i].classList.remove("navigation__link--active");
+            navLinks[i].removeAttribute("aria-current");
+          }
+        }
+        window.scrollTo(0, 0);
+        document.getElementById("main-content").scrollTop = 0;
+        if (name === "crm") {
+          showCrmSection("pipeline");
+        }
+      }
+
+      function confirmCreation(name) {
+        closeDialog(name);
+        var visible = document.querySelector("[data-app-area]:not(.is-hidden) [data-area-notice]");
+        if (visible) {
+          var span = visible.querySelector("span");
+          if (span) span.textContent = confirmMessages[name];
+          visible.classList.remove("is-hidden");
+        } else {
+          showNotice(confirmMessages[name]);
+        }
+      }
+
+      var originalCloseTop = closeTopDialog;
+      closeTopDialog = function () {
+        var extra = ["patient","encounter","quote","product","movement","payment","user","document"];
+        var i;
+        for (i = 0; i < extra.length; i += 1) {
+          if (dialogs[extra[i]] && !dialogs[extra[i]].classList.contains("is-hidden")) {
+            closeDialog(extra[i]);
+            return;
+          }
+        }
+        originalCloseTop();
+      };
+
+
+      function showCrmSection(name) {
+        var sections = document.querySelectorAll("[data-crm-section]");
+        var tabs = document.querySelectorAll("[data-crm-tab]");
+        var i;
+
+        for (i = 0; i < sections.length; i += 1) {
+          if (sections[i].getAttribute("data-crm-section") === name) {
+            sections[i].classList.remove("is-hidden");
+          } else {
+            sections[i].classList.add("is-hidden");
+          }
+        }
+
+        for (i = 0; i < tabs.length; i += 1) {
+          if (tabs[i].getAttribute("data-crm-tab") === name) {
+            tabs[i].classList.add("demo-chip--on");
+            tabs[i].setAttribute("aria-selected", "true");
+          } else {
+            tabs[i].classList.remove("demo-chip--on");
+            tabs[i].setAttribute("aria-selected", "false");
+          }
+        }
+      }
+
+      document.addEventListener("click", function (event) {
+        var areaLink = event.target.closest("[data-area]");
+        if (areaLink) {
+          event.preventDefault();
+          showArea(areaLink.getAttribute("data-area"));
+          return;
+        }
+        if (event.target.closest("[data-duplicate]")) {
+          var box = document.getElementById("duplicate-notice");
+          if (box) box.classList.remove("is-hidden");
+          event.target.closest("[data-duplicate]").classList.add("is-hidden");
+          return;
+        }
+        var noticeClose = event.target.closest("[data-notice-close]");
+        if (noticeClose) {
+          noticeClose.closest(".demo-notice").classList.add("is-hidden");
+          return;
+        }
+        var target = event.target.closest("[data-open], [data-close], [data-confirm], [data-deal], [data-crm-tab]");
+        if (!target) {
+          return;
+        }
+        if (target.hasAttribute("data-open")) {
+          openCreation(target.getAttribute("data-open"));
+        } else if (target.hasAttribute("data-close")) {
+          closeDialog(target.getAttribute("data-close"));
+        } else if (target.hasAttribute("data-confirm")) {
+          confirmCreation(target.getAttribute("data-confirm"));
+        } else if (target.hasAttribute("data-deal")) {
+          openDeal(target.getAttribute("data-deal"));
+        } else if (target.hasAttribute("data-crm-tab")) {
+          showCrmSection(target.getAttribute("data-crm-tab"));
+        }
+      });
+
+      document.getElementById("demo-notice-close").addEventListener("click", hideNotice);
+      document.addEventListener("submit", function (event) {
+        event.preventDefault();
+        if (event.target.closest("[data-home-search]")) {
+          showArea("patients");
+        }
+      });
+      showArea("home");
+
+      document.addEventListener("keydown", function (event) {
+        if (event.key === "Escape") {
+          closeTopDialog();
+        }
+      });
+    }());
+  </script>
+</body>
+</html>
