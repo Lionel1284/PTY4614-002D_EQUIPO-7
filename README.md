@@ -1,19 +1,17 @@
 # CSA Platform
 
-CSA Platform es una aplicación web desarrollada para CSA Salud Integral SpA con el objetivo de centralizar y conectar sus procesos clínicos, ópticos y comerciales. La plataforma permite gestionar información de pacientes bajo una identidad única, mantener trazabilidad entre módulos y reducir la duplicación y retranscripción manual de información.
+CSA Platform es una aplicación web desarrollada para CSA Salud Integral SpA que centraliza la gestión de pacientes y conecta sus procesos clínicos, ópticos y comerciales. La solución busca reducir la duplicación de información, evitar retranscripciones manuales y mejorar la trazabilidad entre las distintas áreas de la organización.
 
-El proyecto corresponde al Producto Mínimo Viable (MVP) desarrollado en el contexto del proyecto Capstone y de la práctica profesional realizada en CSA Salud Integral SpA.
-
-> **Estado actual:** CSA Platform se ejecuta actualmente en un entorno local de desarrollo. No dispone de un entorno de producción ni de una URL pública documentada.
+> **Estado actual:** CSA Platform se ejecuta en un entorno local de desarrollo. Actualmente no dispone de un entorno de producción ni de una URL pública de despliegue.
 
 ## Tecnologías y prerrequisitos
 
-Para ejecutar el proyecto se utilizan las siguientes tecnologías:
+Para instalar y ejecutar el proyecto se utilizan las siguientes tecnologías y herramientas:
 
 ### Frontend
 
 - Node.js 22.22.3
-- npm 11.17.0
+- npm 11.17.0 (versión definida por el proyecto)
 - Angular 22.1.6
 - Angular CLI 22.1.7
 - TypeScript 6.0.3
@@ -31,27 +29,42 @@ Para ejecutar el proyecto se utilizan las siguientes tecnologías:
 ### Base de datos
 
 - MySQL 8.4.11
-- Motor relacional MySQL/InnoDB
+- Motor InnoDB
 - Codificación `utf8mb4`
 
 ### Otras herramientas y componentes
 
 - Git
+- GitHub CLI (`gh`)
+- Django Authentication
 - JWT/Bearer para autenticación
 - RBAC para autorización basada en roles y permisos
 - OpenAPI/Swagger para documentación de la API REST
 
-Docker y Docker Compose no forman parte actualmente del entorno de ejecución del proyecto.
+> Docker y Docker Compose no forman parte actualmente del entorno de ejecución del proyecto.
 
 ## Instalación
 
-El código fuente principal de CSA Platform se mantiene en un repositorio privado administrado por CSA Salud Integral SpA. Por lo tanto, su acceso requiere autorización de la empresa.
+El código fuente de CSA Platform se mantiene en un repositorio privado de GitHub administrado por CSA Salud Integral SpA. Para clonarlo es necesario utilizar una cuenta de GitHub que disponga de acceso autorizado al repositorio.
 
-Una vez obtenida una copia autorizada del proyecto, ubicarse en la raíz de `CSA-Platform`.
+### 1. Clonar el repositorio
 
-### 1. Crear el entorno virtual de Python
+Con GitHub CLI autenticado:
 
-Desde PowerShell:
+```powershell
+gh repo clone csa-salud-integral/CSA-Platform
+cd CSA-Platform
+```
+
+Si GitHub CLI todavía no se encuentra autenticado en el equipo, se puede iniciar el proceso de autenticación mediante:
+
+```powershell
+gh auth login
+```
+
+### 2. Crear el entorno virtual de Python
+
+Desde la raíz de `CSA-Platform`:
 
 ```powershell
 python -m venv .venv
@@ -63,7 +76,7 @@ Activar el entorno virtual:
 .\.venv\Scripts\Activate.ps1
 ```
 
-### 2. Instalar las dependencias del backend
+### 3. Instalar las dependencias del backend
 
 Desde la raíz del proyecto:
 
@@ -77,7 +90,7 @@ Las dependencias Python y sus versiones se encuentran definidas en:
 backend/requirements.txt
 ```
 
-### 3. Instalar las dependencias del frontend
+### 4. Instalar las dependencias del frontend
 
 Ingresar al directorio del frontend:
 
@@ -91,7 +104,7 @@ Instalar las dependencias declaradas en `package-lock.json`:
 npm ci
 ```
 
-Volver posteriormente a la raíz cuando sea necesario:
+Regresar a la raíz del proyecto:
 
 ```powershell
 cd ..
@@ -101,23 +114,23 @@ cd ..
 
 CSA Platform obtiene la configuración sensible del backend mediante variables de entorno.
 
-Actualmente el proyecto no utiliza un archivo `.env.example`, por lo que las variables necesarias para el entorno local deben establecerse en la misma sesión de PowerShell desde la que se ejecutará Django.
+Actualmente el proyecto no utiliza un archivo `.env.example`, por lo que las variables necesarias para el entorno local deben establecerse en la misma sesión de PowerShell desde la que posteriormente se ejecutará Django.
 
 ### Variables principales
 
-Ejemplo de configuración local:
+Ejemplo de configuración para un entorno local:
 
 ```powershell
-$env:DJANGO_SECRET_KEY="TU_CLAVE_LOCAL_DE_DESARROLLO"
+$env:DJANGO_SECRET_KEY="clave_local_de_desarrollo"
 
 $env:DB_NAME="csa_platform_dev"
 $env:DB_USER="csa_dev"
-$env:DB_PASSWORD="TU_PASSWORD_LOCAL_DE_MYSQL"
+$env:DB_PASSWORD="password_mysql_local"
 $env:DB_HOST="127.0.0.1"
 $env:DB_PORT="3308"
 ```
 
-No se deben almacenar contraseñas, claves secretas, tokens ni credenciales reales en el repositorio.
+Los valores de `DJANGO_SECRET_KEY` y `DB_PASSWORD` del ejemplo son únicamente demostrativos y deben reemplazarse localmente por valores válidos. No se deben almacenar contraseñas, claves secretas, tokens ni otras credenciales reales en el repositorio.
 
 Las variables principales utilizadas para la conexión y ejecución del backend son:
 
@@ -130,11 +143,11 @@ DB_HOST
 DB_PORT
 ```
 
-Determinadas funcionalidades de integración, como servicios de correo, Gmail o almacenamiento, utilizan variables de entorno adicionales. Estas configuraciones dependen del entorno y de los servicios autorizados por CSA Salud Integral SpA.
+Algunas funcionalidades específicas, como integraciones con servicios de correo, Gmail o almacenamiento, utilizan variables de entorno adicionales que dependen de los servicios autorizados y configurados por CSA Salud Integral SpA.
 
 ### Base de datos
 
-La configuración local utilizada durante el desarrollo es:
+La configuración utilizada en el entorno local de desarrollo es:
 
 ```text
 Motor: MySQL 8.4.11
@@ -153,15 +166,16 @@ Con el entorno virtual activado:
 ```powershell
 cd backend
 python manage.py migrate
+cd ..
 ```
 
 ## Uso
 
-El frontend y el backend deben ejecutarse de forma independiente, idealmente utilizando dos terminales.
+El backend y el frontend deben ejecutarse de manera independiente, utilizando dos terminales.
 
 ### Backend
 
-Desde la raíz del proyecto:
+Desde la raíz del proyecto, con las variables de entorno previamente configuradas:
 
 ```powershell
 .\.venv\Scripts\Activate.ps1
@@ -183,7 +197,7 @@ http://127.0.0.1:8000/api/v1/
 
 ### Frontend
 
-En otra terminal:
+En una segunda terminal, desde la raíz del proyecto:
 
 ```powershell
 cd frontend
@@ -202,26 +216,18 @@ La aplicación Angular queda disponible localmente en:
 http://localhost:4200/
 ```
 
-### Flujo básico de funcionamiento
+### Ejemplo mínimo de funcionamiento
 
-Una vez que backend y frontend se encuentran ejecutándose, el usuario puede acceder a la aplicación web e iniciar sesión según los roles y permisos configurados.
+1. Iniciar el backend y el frontend utilizando los comandos anteriores.
+2. Abrir `http://localhost:4200/` en un navegador.
+3. Iniciar sesión con un usuario autorizado.
+4. Buscar un paciente por RUT para acceder a su información y a las funcionalidades habilitadas según los roles y permisos asignados al usuario.
 
-Entre los principales flujos del sistema se encuentran:
-
-- gestión unificada de pacientes mediante RUT;
-- Programas de Salud y atención clínica;
-- registro de información y documentos clínicos;
-- Salud Visual y generación de receta óptica;
-- continuidad del proceso hacia Óptica;
-- productos, inventario y Órdenes de Trabajo;
-- ventas y pagos;
-- Servicio al Paciente;
-- CRM Comercial;
-- dashboards e indicadores operacionales.
+Entre los principales procesos disponibles en CSA Platform se encuentran la gestión de pacientes, atención clínica y Programas de Salud, Salud Visual y Óptica, inventario y productos, ventas y pagos, CRM Comercial, Servicio al Paciente, documentos, auditoría y dashboards operacionales.
 
 ## Pruebas
 
-El proyecto incorpora pruebas y validaciones técnicas tanto para backend como para frontend.
+El proyecto incorpora pruebas y validaciones técnicas para backend y frontend.
 
 ### Backend
 
@@ -233,7 +239,7 @@ python manage.py makemigrations --check --dry-run
 python manage.py test
 ```
 
-Estos comandos permiten verificar la configuración de Django, detectar migraciones pendientes y ejecutar la suite de pruebas del backend.
+Estos comandos permiten comprobar la configuración de Django, detectar migraciones pendientes y ejecutar la suite de pruebas automatizadas del backend.
 
 ### Frontend
 
@@ -245,19 +251,17 @@ npx tsc --noEmit
 npx ng test --watch=false
 ```
 
-Estos comandos permiten validar la compilación del proyecto Angular, comprobar TypeScript y ejecutar la suite de pruebas del frontend.
+Estos comandos permiten validar la compilación de Angular, comprobar TypeScript y ejecutar la suite de pruebas automatizadas del frontend.
 
-Las pruebas forman parte del proceso de validación de los incrementos desarrollados y se ejecutan antes de integrar cambios relevantes al proyecto.
+Las pruebas y validaciones técnicas forman parte del proceso utilizado antes de integrar cambios relevantes al proyecto.
 
 ## Enfoque de trabajo en equipo
 
-El proyecto utiliza **Scrum** como marco de trabajo, mediante Sprints semanales y entregas funcionales incrementales.
-
-**Jira** se utiliza como herramienta de gestión para administrar el Product Backlog, Sprint Backlog, prioridades, Sprint Goals y seguimiento de las historias de usuario.
+El equipo utiliza **Scrum**, mediante Sprints semanales y entregas incrementales. **Jira** se emplea como herramienta de gestión para organizar el Product Backlog y dar seguimiento al trabajo de cada Sprint.
 
 ## Estructura del proyecto
 
-La estructura principal del proyecto es la siguiente:
+La estructura principal del repositorio es:
 
 ```text
 CSA-Platform/
@@ -280,13 +284,13 @@ CSA-Platform/
 └── README.md
 ```
 
-El backend se encuentra organizado mediante una arquitectura monolítica modular. Entre los módulos principales se encuentran Clínica, Pacientes, Óptica, Inventario, CRM, Operaciones, Servicio al Paciente, Ventas/Pagos, Reporting, Documentos, Auditoría e Integraciones.
+El backend utiliza una arquitectura monolítica modular y agrupa las funcionalidades del sistema en módulos independientes dentro de una misma aplicación y despliegue.
 
 ## Autores
 
-- **Leonel González** - Scrum Master + Developer
-- **Esteban Toledo** - Developer
-- **Jeremy Navarro** - Developer
+- **Leonel González** — Scrum Master + Developer
+- **Esteban Toledo** — Developer
+- **Jeremy Navarro** — Developer
 
 **Sección:** PTY4614-002D  
 **Docente guía:** Mallén González  
@@ -297,4 +301,4 @@ El backend se encuentra organizado mediante una arquitectura monolítica modular
 
 No aplica.
 
-CSA Platform corresponde a un desarrollo realizado para CSA Salud Integral SpA y su código fuente principal se mantiene en un repositorio privado administrado por la empresa. No se declara una licencia de código abierto para su distribución pública.
+CSA Platform corresponde a un desarrollo realizado para CSA Salud Integral SpA. Su código fuente se mantiene en un repositorio privado administrado por la organización y no se publica bajo una licencia de código abierto.
